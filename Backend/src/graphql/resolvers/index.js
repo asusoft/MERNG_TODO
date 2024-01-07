@@ -5,7 +5,6 @@ import { TaskListQueriesResolvers } from './TaskList/Queries/index.js';
 import { TaskListCustomResolvers } from './TaskList/index.js';
 import { ToDoMutationResolvers } from './ToDo/Mutations/index.js';
 import { ToDoCustomResolvers } from './ToDo/index.js';
-import { ObjectId } from 'mongodb';
 
 const resolvers = {
     Query: {
