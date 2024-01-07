@@ -1,6 +1,11 @@
 import { UserMutationResolvers } from './User/Mutations/index.js';
+import { UserCustomResolvers } from './User/index.js';
 import { TaskListMutationResolvers } from './TaskList/Mutations/index.js';
 import { TaskListQueriesResolvers } from './TaskList/Queries/index.js';
+import { TaskListCustomResolvers } from './TaskList/index.js';
+import { ToDoMutationResolvers } from './ToDo/Mutations/index.js';
+import { ToDoCustomResolvers } from './ToDo/index.js';
+import { ObjectId } from 'mongodb';
 
 const resolvers = {
     Query: {
@@ -9,18 +14,10 @@ const resolvers = {
     Mutation: {
         ...UserMutationResolvers,
         ...TaskListMutationResolvers,
+        ...ToDoMutationResolvers
     },
-    User: {
-        id: ({ _id, id }) => _id || id
-    },
-    TaskList: {
-        id: ({ _id, id }) => _id || id,
-        progress: () => 0,
-        users: async ({ userIds }, _, { db }) => Promise.all(
-            userIds.map((userId) => (
-                db.collection('Users').findOne({ _id: userId }))
-            )
-        )
-    }
+    ...UserCustomResolvers,
+    ...TaskListCustomResolvers,
+    ...ToDoCustomResolvers,
 };
 export default resolvers;

@@ -1,0 +1,9 @@
+import { ObjectId } from "mongodb";
+
+export const deleteToDoResolver = async (_, { id }, { db, user }) => {
+    if (!user) { throw new Error('Unauthenticated') }
+
+    const result = await db.collection('ToDos').deleteOne({ _id: new ObjectId(id) })
+
+    return result.acknowledged
+};
