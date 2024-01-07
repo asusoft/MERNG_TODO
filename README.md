@@ -28,16 +28,16 @@ Welcome to the Collaborative ToDo App, a full-stack application designed to enha
 ### Install Dependencies
 
 - **For Backend**:
-  \```bash
+  ```
   cd backend
   npm install
-  \```
+  ```
 
 - **For Frontend**:
-  \```bash
+  ```
   cd frontend
   npm install
-  \```
+  ```
 
 ### Environment Setup
 
@@ -46,14 +46,14 @@ Welcome to the Collaborative ToDo App, a full-stack application designed to enha
 ### Run the Application
 
 - **Start the backend server**:
-  \```bash
+  ```
   npm start
-  \```
+  ```
 
 - **Start the frontend React application**:
-  \```bash
+  ```
   npm start
-  \```
+  ```
 
 ## Usage
 
