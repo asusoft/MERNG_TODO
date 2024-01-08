@@ -1,13 +1,30 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import React, { Component, useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 import ToDoItem from './src/components/ToDoItem';
 
 // create a component
 const App = () => {
+  const [todos, setTodos] = useState([{
+    id: 'dsghdshjdfs',
+    content: 'Buy milk',
+    isCompleted: false
+  }, {
+    id: 'asldlskjfoif',
+    content: 'Cook food',
+    isCompleted: false
+  }, {
+    id: 'oasdoiriuds',
+    content: 'Eat food',
+    isCompleted: false
+  }])
   return (
     <SafeAreaView style={styles.container}>
-      <ToDoItem />
+      <FlatList
+        data={todos}
+        renderItem={({ item }) => <ToDoItem todo={item} onSubmit={() => {}}/>}
+        style={{ width: '100%'}}
+      />
     </SafeAreaView>
   );
 };

@@ -1,18 +1,21 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import icons from '../../icons';
 
 
 interface CheckBoxProps {
-    isChecked: boolean
+    isChecked: boolean,
+    onPress: () => void
 }
-// create a component
+
 export const CheckBox = (props: CheckBoxProps) => {
 
     const source = props.isChecked ? icons.checked : icons.unchecked
     return (
-        <Image source={source} style={{ height: 30, width: 30}} tintColor={'#FFF'}/>
+        <Pressable onPress={props.onPress}>
+            <Image source={source} style={{ height: 24, width: 24}} tintColor={'#FFF'}/>
+        </Pressable>
     );
 };
 
