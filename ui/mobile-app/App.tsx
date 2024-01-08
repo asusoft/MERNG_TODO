@@ -18,12 +18,24 @@ const App = () => {
     content: 'Eat food',
     isCompleted: false
   }])
+
+  const createNewItem = (index: number) => {
+    const newTodos = [...todos]
+
+    newTodos.splice(index, 0, {
+      id: 'kakjadsiucg',
+      content: '',
+      isCompleted: false
+    })
+
+    setTodos(newTodos)
+  }
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={todos}
-        renderItem={({ item }) => <ToDoItem todo={item} onSubmit={() => {}}/>}
-        style={{ width: '100%'}}
+        renderItem={({ item, index }) => <ToDoItem todo={item} onSubmit={() => createNewItem(index + 1)} />}
+        style={{ width: '100%' }}
       />
     </SafeAreaView>
   );
