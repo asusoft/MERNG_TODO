@@ -1,15 +1,18 @@
 //import liraries
-import React, {Component, useState} from 'react';
-
+import React from 'react';
+import {ApolloProvider} from '@apollo/client';
+import {client} from './apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import MainStack from './src/navigation/MainStack';
 
 // create a component
 const App = () => {
   return (
-    <NavigationContainer>
-      <MainStack />
-    </NavigationContainer>
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        <MainStack />
+      </NavigationContainer>
+    </ApolloProvider>
   );
 };
 

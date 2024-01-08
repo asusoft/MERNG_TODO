@@ -8,12 +8,21 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --cache",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.8",
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/client-preset": "^4.1.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-codegen/typescript-react-apollo": "^4.1.0",
+    "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@react-navigation/stack": "^6.3.20",
+    "graphql": "^16.8.1",
     "react": "18.2.0",
     "react-native": "0.73.1",
     "react-native-gesture-handler": "^2.14.0",
