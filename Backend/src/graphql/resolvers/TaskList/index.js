@@ -18,7 +18,6 @@ export const TaskListCustomResolvers = {
                 db.collection('Users').findOne({ _id: userId }))
             )
         ),
-        todos: async ({ _id }, _, { db }) => await db.collection('ToDos').find({ taskListId: new ObjectId(_id) }).toArray()
-   
+        todos: async ({ _id }, _, { db }) => await db.collection('ToDos').find({ taskListId: new ObjectId(_id) }).toArray(),
     }
 };

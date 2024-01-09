@@ -1,6 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {View, TextInput} from 'react-native';
-import {CheckBox} from '../CheckBox';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, TextInput } from 'react-native';
+import { CheckBox } from '../CheckBox';
+import { useUpdateToDoMutation, useDeleteToDoMutation } from '../../shared/generated/types/graphql';
 
 interface ToDoItemProps {
   todo: {
@@ -11,11 +12,24 @@ interface ToDoItemProps {
   onSubmit: () => void;
 }
 
-const ToDoItem = ({todo, onSubmit}: ToDoItemProps) => {
+const ToDoItem = ({ todo, onSubmit }: ToDoItemProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [content, setContent] = useState(todo.content);
 
+  const [updateToDo] = useUpdateToDoMutation()
+  const [deletToDo] = useDeleteToDoMutation()
+
   const inputRef = useRef(null);
+
+  const callUpdateToDo = async (checked: boolean) => {
+    await updateToDo({
+      variables: {
+        todoId: todo.id,
+        content,
+        isCompleted: checked
+      }
+    })
+  }
 
   useEffect(() => {
     if (!todo) {
@@ -31,16 +45,23 @@ const ToDoItem = ({todo, onSubmit}: ToDoItemProps) => {
     }
   }, [inputRef]);
 
-  const onKeyPress = ({nativeEvent}) => {
+  const onKeyPress = async ({ nativeEvent }) => {
     if (nativeEvent.key === 'Backspace' && content === '') {
-      console.log('Delete');
+      await deletToDo({variables: {todoId: todo.id}});
     }
   };
 
+  const onToggleChecked = () => {
+    setIsChecked(s => !s)
+    callUpdateToDo(!isChecked)
+  }
+
   return (
     <View
-      style={{flexDirection: 'row', marginVertical: 3, marginHorizontal: 20}}>
-      <CheckBox isChecked={isChecked} onPress={() => setIsChecked(s => !s)} />
+      style={{ flexDirection: 'row', marginVertical: 3, marginHorizontal: 20 }}>
+      <CheckBox isChecked={isChecked}
+        onPress={onToggleChecked}
+      />
       <TextInput
         ref={inputRef}
         value={content}
@@ -55,6 +76,7 @@ const ToDoItem = ({todo, onSubmit}: ToDoItemProps) => {
         onSubmitEditing={onSubmit}
         blurOnSubmit
         onKeyPress={onKeyPress}
+        onEndEditing={() => callUpdateToDo(isChecked)}
       />
     </View>
   );

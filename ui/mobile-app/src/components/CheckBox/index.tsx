@@ -11,7 +11,7 @@ interface CheckBoxProps {
 export const CheckBox = (props: CheckBoxProps) => {
   const source = props.isChecked ? icons.checked : icons.unchecked;
   return (
-    <Pressable onPress={props.onPress}>
+    <Pressable onPress={() => props.onPress()}>
       <Image
         source={source}
         style={{height: 24, width: 24}}

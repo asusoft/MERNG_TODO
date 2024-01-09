@@ -12,7 +12,6 @@ export const updateToDoResolver = async (_, data, { db, user }) => {
 
     if (result.acknowledged) {
         const todo = await db.collection('ToDos').findOne({ _id: new ObjectId(data.id) });
-        console.log(todo)
         return todo
     }
 

@@ -21,7 +21,7 @@ const TaskListItem = ({Item}: TaskListItemProps) => {
   };
 
   return (
-    <Pressable style={{flexDirection: 'row', gap: 5}} onPress={onItemPress}>
+    <Pressable style={{flexDirection: 'row', gap: 5, marginBottom: 8}} onPress={onItemPress}>
       <Image
         source={icons.file}
         style={{height: 40, width: 40}}
