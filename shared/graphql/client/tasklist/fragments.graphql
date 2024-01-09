@@ -1,0 +1,5 @@
+fragment SimpleTodo on ToDo {
+    id
+    content
+    isCompleted
+}

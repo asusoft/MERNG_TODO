@@ -1,0 +1,15 @@
+query GetTask($taskId: ID!) {
+  getTaskList(id: $taskId) {
+    createdAt
+    id
+    progress
+    title
+    users {
+      avatar
+      name
+    }
+    todos {
+      ...SimpleTodo
+    }
+  }
+}

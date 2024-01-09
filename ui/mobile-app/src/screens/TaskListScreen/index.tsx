@@ -1,52 +1,54 @@
 //import liraries
-import React, {Component, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
-  Image,
   FlatList,
   SafeAreaView,
+  ActivityIndicator,
+  Alert,
+  View,
 } from 'react-native';
-import icons from '../../icons';
 import TaskListItem from '../../components/TaskListItem';
+import { SimpleTask, useGetMyTaskListsQuery } from '../../shared/generated/types/graphql';
 
-// create a component
 const TaskListScreen = () => {
-  const [taskList, setTaskList] = useState([
-    {
-      id: 'dsghdshjdfs',
-      title: 'Task 1',
-      createdAt: 'Today',
-    },
-    {
-      id: 'asldlskjfoif',
-      title: 'Task 2',
-      createdAt: 'Yesterday',
-    },
-    {
-      id: 'oasdoiriuds',
-      title: 'Task 3',
-      createdAt: 'Sunday',
-    },
-  ]);
+  const { data, loading, error } = useGetMyTaskListsQuery()
+  const [taskList, setTaskList] = useState<SimpleTask[]>();
+
+  useEffect(() => {
+    if (error) console.log("Error fetching task list " + error.message)
+  }, [error])
+
+  useEffect(() => {
+    if (data) {
+      const list = data.myTaskLists
+      setTaskList(list)
+    }
+  }, [data])
+
+  if (loading || data?.myTaskLists.length === 0)
+    return (
+      <View style={{ alignItems: 'center', justifyContent: 'center', ...styles.container}}>
+        <ActivityIndicator size={'large'} />
+      </View>
+    )
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={taskList}
-        renderItem={({item}) => <TaskListItem Item={item} />}
-        style={{width: '100%'}}
+        renderItem={({ item }) => <TaskListItem Item={item} />}
+        style={{ width: '100%' }}
         contentContainerStyle={{
           paddingHorizontal: 20,
           gap: 8,
         }}
-        // ItemSeparatorComponent={() =>  <View style={{borderWidth: 0.3, borderColor: '#E3E5E5'}} />}
+      // ItemSeparatorComponent={() =>  <View style={{borderWidth: 0.3, borderColor: '#E3E5E5'}} />}
       />
     </SafeAreaView>
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -55,5 +57,5 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
+
 export default TaskListScreen;

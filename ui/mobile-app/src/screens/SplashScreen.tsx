@@ -18,7 +18,7 @@ const SplashScreen = () => {
   }, []);
 
   const isAuthenticated = async (): Promise<boolean> => {
-    await AsyncStorage.removeItem('token')
+    //await AsyncStorage.removeItem('token')
     const token = await AsyncStorage.getItem('token')
     return !!token;
   };

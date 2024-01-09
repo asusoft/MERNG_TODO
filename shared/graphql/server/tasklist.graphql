@@ -1,0 +1,26 @@
+type TaskList {
+    id: ID!
+    createdAt: String!
+    title: String!
+    progress: Float!
+    users: [User!]!
+    todos: [ToDo!]!
+}
+
+type SimpleTask {
+    id: ID!
+    createdAt: String!
+    title: String!
+}
+
+extend type Query {
+    myTaskLists: [SimpleTask!]!
+    getTaskList(id: ID!): TaskList!
+}
+
+extend type Mutation {
+    createTaskList(title: String!): TaskList!
+    updateTaskList(id: ID!, title: String!): TaskList!
+    deleteTaskList(id: ID!): Boolean!
+    addUserToTaskList(taskListId: ID!, userId: ID!): TaskList
+}

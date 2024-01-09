@@ -1,0 +1,23 @@
+ type ToDo {
+    id: ID!
+    content: String!
+    isCompleted: Boolean!
+    taskListId: ID!
+    taskList: TaskList!
+}
+
+type SimpleTodo {
+    id: ID!
+    content: String!
+    isCompleted: Boolean!
+}
+
+extend type Mutation {
+    createToDo(content: String!, taskListId: ID!): ToDo!
+    updateToDo(id: ID!, content: String, isCompleted: Boolean): ToDo!
+    deleteToDo(id: ID!): Boolean!
+}
+
+extend type Query {
+    getToDo(content: String!, taskListId: ID!): ToDo!
+}
