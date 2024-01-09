@@ -11,12 +11,13 @@ import {
   View,
   Pressable,
   Text,
+  Image,
 } from 'react-native';
 import ToDoItem from '../../components/ToDoItem';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useGetTaskQuery, SimpleTodoFragment, useCreateTodoMutation, useUpdateTaskMutation } from '../../shared/generated/types/graphql';
 import AddButton from '../../components/AddButton';
-import CreateModal from '../../components/Modals';
+import icons from '../../icons';
 
 // create a component
 const TodosScreen = () => {
@@ -24,7 +25,7 @@ const TodosScreen = () => {
   const id = route.params?.id
   const [title, setTitle] = useState('Hello');
   const [todos, setTodos] = useState<SimpleTodoFragment[]>([]);
-  const [total, setTotal] = useState<number>()
+  const navigation = useNavigation()
 
   const { data, loading, error } = useGetTaskQuery({ variables: { taskId: id } })
 
@@ -40,7 +41,6 @@ const TodosScreen = () => {
       const title = data.getTaskList.title
       setTitle(title)
       setTodos(data.getTaskList.todos)
-      setTotal(data.getTaskList?.todos?.length)
     }
   }, [data])
 
@@ -55,46 +55,51 @@ const TodosScreen = () => {
     });
 
     setTodos(newTodos);
-    setTotal(t => t + 1)
   };
 
   const updateTaskTitle = async () => {
     await updateTask({ variables: { taskId: id, title } })
   }
 
-  if (loading || !data)
+  if (loading)
     return (
       <View style={{ justifyContent: 'center', ...styles.container }}>
         <ActivityIndicator size={'large'} />
       </View>
     )
 
-  if (total < 1)
-    return (
-      <View style={{ justifyContent: 'center', ...styles.container }}>
-        <Text style={{ color: 'grey', fontSize: 24 }}>Add your first ToDo</Text>
-        <AddButton onPress={() => createNewItem(0)} />
-      </View>
-    )
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: '#2d2d30' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}>
       <SafeAreaView style={styles.container}>
-        <TextInput
-          style={styles.title}
-          value={title}
-          placeholder={'Title'}
-          onChangeText={setTitle}
-          placeholderTextColor={'grey'}
-          onEndEditing={updateTaskTitle}
-        />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%', marginBottom: 20 }} >
+          <Pressable onPress={() => navigation.goBack()}>
+            <Image source={icons.back} style={{ height: 20, width: 30, tintColor: 'white' }} />
+          </Pressable>
+          <TextInput
+            style={styles.title}
+            value={title}
+            placeholder={'Title'}
+            onChangeText={setTitle}
+            placeholderTextColor={'grey'}
+            onEndEditing={updateTaskTitle}
+          />
+          <View />
+        </View>
         <FlatList
           data={todos}
           renderItem={({ item, index }) => (
             <ToDoItem todo={item} onSubmit={() => createNewItem(index + 1)} />
           )}
+          ListEmptyComponent={
+              <View style={{ justifyContent: 'center', ...styles.container }}>
+                <Text style={{ color: 'grey', fontSize: 24 }}>Add your first ToDo</Text>
+                <AddButton onPress={() => createNewItem(0)} />
+              </View>
+          }
+          contentContainerStyle={{ flex: 1 }}
           style={{ width: '100%' }}
         />
       </SafeAreaView>
@@ -114,7 +119,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 19,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginLeft: -20
   },
 });
 

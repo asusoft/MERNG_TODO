@@ -1,49 +1,32 @@
 //import liraries
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   FlatList,
   SafeAreaView,
-  ActivityIndicator, View,
-  Pressable,
-  Image,
+  ActivityIndicator, 
+  View,
   StyleSheet,
-  Modal,
   Text,
-  TextInput
 } from 'react-native';
 import TaskListItem from '../../components/TaskListItem';
-import { SimpleTask, useGetMyTaskListsQuery, useCreateTaskMutation } from '../../shared/generated/types/graphql';
-import icons from '../../icons';
 import AddButton from '../../components/AddButton';
 import CreateModal from '../../components/Modals';
+import { useTaskList } from './model/use-task-list';
 
 export const TaskListScreen = () => {
-  const { data, loading, error } = useGetMyTaskListsQuery();
-  const [taskList, setTaskList] = useState<SimpleTask[]>();
-  const [createTask] = useCreateTaskMutation()
   const [isAddTask, setIsAddTask] = useState(false)
   const [title, setTitle] = useState('')
-
-  useEffect(() => {
-    if (error) console.log("Error fetching task list " + error.message);
-  }, [error]);
-
-  useEffect(() => {
-    if (data) {
-      const list = data.myTaskLists;
-      setTaskList(list);
-    }
-  }, [data]);
+  const { list, createNewTask, loading } = useTaskList()
 
   const onCreate = async () => {
     if (title !== '') {
-      await createTask({ variables: { title } })
+      await createNewTask(title)
       setTitle('')
       setIsAddTask(false)
     }
   }
 
-  if (loading || data?.myTaskLists.length === 0)
+  if (loading)
     return (
       <View style={{ alignItems: 'center', justifyContent: 'center', ...styles.container }}>
         <ActivityIndicator size={'large'} />
@@ -53,13 +36,20 @@ export const TaskListScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={taskList}
+        data={list}
         renderItem={({ item }) => <TaskListItem Item={item} />}
         style={{ width: '100%' }}
         contentContainerStyle={{
           paddingHorizontal: 20,
           gap: 2,
-        }} />
+          flex: 1
+        }} 
+        ListEmptyComponent={
+          <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center'}}>
+            <Text style={{ color: 'grey', fontSize: 24 }}>Add your first Task</Text>
+          </View>
+        }
+        />
       <AddButton onPress={() => setIsAddTask(true)} />
       <CreateModal
         value={title}
@@ -80,41 +70,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     backgroundColor: '#2d2d30',
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    margin: 20,
-    gap: 14,
-    width: '80%',
-    marginHorizontal: 20,
-    backgroundColor: '#22303c',
-    borderRadius: 20,
-    padding: 25,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#e33062"
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
+  }
 });
 
 
