@@ -1,5 +1,5 @@
 //import liraries
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
   View,
@@ -21,7 +21,7 @@ const SignUpScreen = () => {
 
   const [signUp, {loading}] = useSignUpMutation();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const onSubmit = async () => {
     const signUpInput = {

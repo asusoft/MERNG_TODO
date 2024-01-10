@@ -9,7 +9,8 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --cache",
     "start": "react-native start",
     "test": "jest",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config codegen.ts",
+    "check-types": "tsc --noemit"
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",

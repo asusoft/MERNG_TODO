@@ -1,5 +1,5 @@
 //import liraries
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
 import React, {Component, useEffect, useState} from 'react';
 import {
   View,
@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const [signIn, {error, loading}] = useSignInMutation();
 
   useEffect(() => {
