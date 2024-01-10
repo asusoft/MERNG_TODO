@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -10,12 +10,12 @@ import {
 import TaskListItem from '../../components/TaskListItem';
 import AddButton from '../../components/AddButton';
 import CreateModal from '../../components/Modals';
-import {useTaskList} from './model/use-task-list';
+import { useTaskList } from './model/use-task-list';
 
 export const TaskListScreen = () => {
   const [isAddTask, setIsAddTask] = useState(false);
   const [title, setTitle] = useState('');
-  const {list, createNewTask, loading} = useTaskList();
+  const { list, createNewTask, loading } = useTaskList();
 
   const onCreate = async () => {
     if (title !== '') {
@@ -42,8 +42,8 @@ export const TaskListScreen = () => {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={list}
-        renderItem={({item}) => <TaskListItem Item={item} />}
-        style={{width: '100%'}}
+        renderItem={({ item }) => <TaskListItem Item={item} />}
+        style={{ width: '100%' }}
         contentContainerStyle={{
           paddingHorizontal: 20,
           gap: 2,
@@ -51,14 +51,20 @@ export const TaskListScreen = () => {
         }}
         ListEmptyComponent={
           <View
-            style={{justifyContent: 'center', flex: 1, alignItems: 'center'}}>
-            <Text style={{color: 'grey', fontSize: 24}}>
+            style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+            <Text style={{ color: 'grey', fontSize: 24 }}>
               Add your first Task
             </Text>
           </View>
         }
       />
-      <AddButton onPress={() => setIsAddTask(true)} />
+      <View style={{
+        position: 'absolute',
+        right: 30,
+        bottom: 40,
+      }}>
+        <AddButton onPress={() => setIsAddTask(true)} dimension={60} />
+      </View>
       <CreateModal
         value={title}
         onSubmit={() => onCreate()}

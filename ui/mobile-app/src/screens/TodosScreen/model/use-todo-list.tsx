@@ -18,6 +18,7 @@ export const useToDoList = (id: string) => {
   const [users, setUsers] = useState<User[] | undefined>([])
   const [addedUsers, setAddedUsers] = useState<User[] | undefined>([])
   const [title, setTitle] = useState('');
+  const [ progress, setProgess] = useState(0)
   const {data, loading, error, refetch} = useGetTaskQuery({
     variables: {taskId: id},
   });
@@ -36,8 +37,8 @@ export const useToDoList = (id: string) => {
         setList(list);
         setTitle(data.getTaskList.title);
         setAddedUsers(data.getTaskList.users)
-
-        console.log(data.getTaskList.users)
+        const prog = data.getTaskList.progress / 100
+        setProgess(prog)
       }
     },
     getUnAddedUsers: async () => {
@@ -78,13 +79,14 @@ export const useToDoList = (id: string) => {
       }
     },
     updateToDo: async (id: string, checked: boolean, content: string) => {
-      await updateToDo({
+      const response = await updateToDo({
         variables: {
           todoId: id,
           content,
           isCompleted: checked,
         },
       });
+      refetch()
     },
     addUserToTask: async (userId: string) => {
       const response = await addUser({variables: {
@@ -125,6 +127,7 @@ export const useToDoList = (id: string) => {
     loading,
     title,
     addedUsers,
-    users
+    users,
+    progress
   };
 };
