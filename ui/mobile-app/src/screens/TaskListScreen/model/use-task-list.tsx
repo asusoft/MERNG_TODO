@@ -4,6 +4,7 @@ import {
   useGetMyTaskListsQuery,
   useCreateTaskMutation,
   useGetMyTaskListsLazyQuery,
+  useDeleteTaskMutation,
 } from '../../../shared/generated/types/graphql';
 import {useIsFocused} from '@react-navigation/native';
 
@@ -12,6 +13,7 @@ export const useTaskList = () => {
   const [list, setList] = useState<SimpleTask[]>([]);
   const {data, loading, error, refetch} = useGetMyTaskListsQuery();
   const [createTask] = useCreateTaskMutation();
+  const [deleteTask] = useDeleteTaskMutation()
 
   const actions = {
     getList: async () => {
@@ -35,6 +37,17 @@ export const useTaskList = () => {
         });
       }
     },
+    deleteTask: async (id: string) => {
+      const response = await deleteTask({variables: {deleteTaskListId: id}})
+      if(response.data?.deleteTaskList) {
+        setList(state => {
+          if (state && Array.isArray(state)) {
+            return state.filter(item => item.id !== id);
+          }
+          return state;
+        });
+      }
+    }
   };
 
   useEffect(() => {
@@ -50,6 +63,7 @@ export const useTaskList = () => {
   return {
     list,
     createNewTask: actions.createNew,
+    deleteTask: actions.deleteTask,
     loading,
   };
 };

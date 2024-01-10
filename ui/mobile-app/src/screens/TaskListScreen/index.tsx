@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import TaskListItem from '../../components/TaskListItem';
 import AddButton from '../../components/AddButton';
-import CreateModal from '../../components/Modals';
+import CreateModal from '../../components/Modals/create-todo';
 import { useTaskList } from './model/use-task-list';
 
 export const TaskListScreen = () => {
   const [isAddTask, setIsAddTask] = useState(false);
   const [title, setTitle] = useState('');
-  const { list, createNewTask, loading } = useTaskList();
+  const { list, createNewTask, loading, deleteTask } = useTaskList();
 
   const onCreate = async () => {
     if (title !== '') {
@@ -40,14 +40,17 @@ export const TaskListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={{ margin: 20, fontSize: 30, fontWeight: 'bold', color: 'white' }}>My Tasks</Text>
       <FlatList
         data={list}
-        renderItem={({ item }) => <TaskListItem Item={item} />}
+        renderItem={({ item }) => <TaskListItem Item={item} onDelete={() => deleteTask(item.id)}/>}
         style={{ width: '100%' }}
         contentContainerStyle={{
-          paddingHorizontal: 20,
-          gap: 2,
-          flex: 1,
+          padding: 20,
+          gap: 5,
+          backgroundColor: '#192734',
+          margin: 20,
+          borderRadius: 12
         }}
         ListEmptyComponent={
           <View
@@ -57,6 +60,7 @@ export const TaskListScreen = () => {
             </Text>
           </View>
         }
+        ItemSeparatorComponent={() => <View style={{ height: 0.4, backgroundColor: 'grey' }} />}
       />
       <View style={{
         position: 'absolute',
@@ -83,7 +87,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: '#2d2d30',
+    backgroundColor: '#15202b',
   },
 });
 

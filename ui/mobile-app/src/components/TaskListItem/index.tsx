@@ -1,8 +1,8 @@
 //import liraries
-import React, {Component, useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import icons from '../../icons';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
 import {timeAgo} from '../../helpers/timeAgo';
 
 interface TaskListItemProps {
@@ -11,19 +11,20 @@ interface TaskListItemProps {
     title: string;
     createdAt: string;
   };
+  onDelete: () => void
 }
 
 // create a component
-const TaskListItem = ({Item}: TaskListItemProps) => {
-  const navigation = useNavigation();
+const TaskListItem = ({Item, onDelete}: TaskListItemProps) => {
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const onItemPress = () => {
-    navigation.navigate('ToDoScreen', {id: Item.id});
+    navigation.navigate('ToDoScreen', { id: Item.id });
   };
 
   const createdAt = timeAgo(Item.createdAt);
   return (
     <Pressable
-      style={{flexDirection: 'row', gap: 5, marginBottom: 8 }}
+      style={{flexDirection: 'row', gap: 5, marginVertical: 12 }}
       onPress={onItemPress}
       >
       <Image
@@ -32,11 +33,15 @@ const TaskListItem = ({Item}: TaskListItemProps) => {
         tintColor={'white'}
       />
       <View>
-        <Text style={{fontSize: 18, color: 'white'}}>{Item.title}</Text>
+        <Text style={{fontSize: 22, color: 'white'}}>{Item.title}</Text>
         <Text style={{fontSize: 12, color: 'white', opacity: 0.7}}>
           {createdAt}
         </Text>
       </View>
+      <Pressable onPress={onDelete} style={{ marginLeft: 'auto'}}>
+       <Image source={icons.trash} style={{ height: 25, width: 25, tintColor: '#e33062'}}/>
+      </Pressable>
+     
     </Pressable>
   );
 };

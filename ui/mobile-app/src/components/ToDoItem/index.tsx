@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, TextInput } from 'react-native';
+import { View, TextInput, NativeSyntheticEvent, TextInputKeyPressEventData } from 'react-native';
 import { CheckBox } from '../CheckBox';
 
 interface ToDoItemProps {
@@ -17,7 +17,7 @@ const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate }: ToDoItemProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [content, setContent] = useState(todo.content);
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<TextInput>(null);
 
   const callUpdateToDo = async (checked: boolean) => {
       onUpdate(todo.id, checked, content)
@@ -37,7 +37,7 @@ const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate }: ToDoItemProps) => {
     }
   }, [inputRef]);
 
-  const onKeyPress = async ({ nativeEvent }) => {
+  const onKeyPress = async ({ nativeEvent }: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
     if (nativeEvent.key === 'Backspace' && content === '') {
       onDelete();
     }
