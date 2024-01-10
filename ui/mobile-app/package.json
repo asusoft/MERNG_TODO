@@ -10,7 +10,8 @@
     "start": "react-native start",
     "test": "jest",
     "codegen": "graphql-codegen --config codegen.ts",
-    "check-types": "tsc --noemit"
+    "check-types": "tsc --noemit",
+    "prettify": "prettier --write src/**/*.{ts,tsx}"
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",

@@ -1,4 +1,8 @@
-import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {ActivityIndicator, Image, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';

@@ -1,6 +1,5 @@
-//import liraries
 import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
-import React, {Component, useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,7 +12,7 @@ import {
 import {useSignInMutation} from '../../shared/generated/types/graphql';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// create a component
+
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -113,7 +112,7 @@ const SignInScreen = () => {
   );
 };
 
-// define your styles
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -124,5 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
 export default SignInScreen;
