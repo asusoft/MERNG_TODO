@@ -5,10 +5,12 @@ import { TaskListQueriesResolvers } from './TaskList/Queries/index.js';
 import { TaskListCustomResolvers } from './TaskList/index.js';
 import { ToDoMutationResolvers } from './ToDo/Mutations/index.js';
 import { ToDoCustomResolvers } from './ToDo/index.js';
+import { UserQueriesResolvers } from './User/Queries/index.js';
 
 const resolvers = {
     Query: {
-        ...TaskListQueriesResolvers
+        ...TaskListQueriesResolvers,
+        ...UserQueriesResolvers
     },
     Mutation: {
         ...UserMutationResolvers,

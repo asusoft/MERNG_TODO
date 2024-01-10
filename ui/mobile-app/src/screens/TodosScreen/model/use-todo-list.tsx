@@ -6,20 +6,28 @@ import {
   useUpdateTaskMutation,
   useUpdateToDoMutation,
   useDeleteToDoMutation,
+  User,
+  useGetAllUsersQuery,
+  useAddUserToTaskMutation,
 } from '../../../shared/generated/types/graphql';
 import {useIsFocused} from '@react-navigation/native';
 
 export const useToDoList = (id: string) => {
   const isFocused = useIsFocused();
   const [list, setList] = useState<SimpleTodoFragment[]>([]);
+  const [users, setUsers] = useState<User[] | undefined>([])
+  const [addedUsers, setAddedUsers] = useState<User[] | undefined>([])
   const [title, setTitle] = useState('');
   const {data, loading, error, refetch} = useGetTaskQuery({
     variables: {taskId: id},
   });
+  const {data: unaddedUsers, refetch: refechUnaddedUsers} = useGetAllUsersQuery()
+
   const [createToDo] = useCreateTodoMutation();
   const [updateTask] = useUpdateTaskMutation();
   const [updateToDo] = useUpdateToDoMutation();
   const [deleteToDo] = useDeleteToDoMutation();
+  const [addUser] = useAddUserToTaskMutation()
 
   const actions = {
     getList: async () => {
@@ -27,7 +35,19 @@ export const useToDoList = (id: string) => {
         const list = data.getTaskList.todos;
         setList(list);
         setTitle(data.getTaskList.title);
+        setAddedUsers(data.getTaskList.users)
+
+        console.log(data.getTaskList.users)
       }
+    },
+    getUnAddedUsers: async () => {
+      if (unaddedUsers) {
+        const list = unaddedUsers.getAllUsers;
+        const unaddedList = list.filter(item => {
+            return !addedUsers?.some(addedUser => addedUser.id === item.id);
+        });
+        setUsers(unaddedList);
+    }
     },
     createNew: async (index: number) => {
       const response = await createToDo({
@@ -66,6 +86,22 @@ export const useToDoList = (id: string) => {
         },
       });
     },
+    addUserToTask: async (userId: string) => {
+      const response = await addUser({variables: {
+        taskListId: id,
+        userId
+      }})
+
+      if(response.data){
+        setAddedUsers(response.data.addUserToTaskList?.users)
+        setUsers(state => {
+          if (state && Array.isArray(state)) {
+            return state.filter(item => item.id !== userId);
+          }
+          return state;
+        });
+      }
+    }
   };
 
   useEffect(() => {
@@ -73,8 +109,13 @@ export const useToDoList = (id: string) => {
   }, [data]);
 
   useEffect(() => {
+    actions.getUnAddedUsers();
+  }, [unaddedUsers]);
+
+  useEffect(() => {
     if (isFocused) {
       refetch();
+      refechUnaddedUsers()
     }
   }, [isFocused]);
 
@@ -83,5 +124,7 @@ export const useToDoList = (id: string) => {
     actions,
     loading,
     title,
+    addedUsers,
+    users
   };
 };
