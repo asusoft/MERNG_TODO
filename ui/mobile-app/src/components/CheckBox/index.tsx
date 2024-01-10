@@ -1,6 +1,5 @@
-//import liraries
-import React, {Component} from 'react';
-import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
+import React from 'react';
+import {Image, Pressable} from 'react-native';
 import icons from '../../icons';
 
 interface CheckBoxProps {
@@ -15,18 +14,8 @@ export const CheckBox = (props: CheckBoxProps) => {
       <Image
         source={source}
         style={{height: 24, width: 24}}
-        tintColor={'#FFF'}
+        tintColor={props.isChecked ? 'grey' : '#FFF'}
       />
     </Pressable>
   );
 };
-
-// define your styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2c3e50',
-  },
-});

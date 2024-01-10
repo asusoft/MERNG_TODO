@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useEffect } from 'react';
-import { ActivityIndicator, Image, View } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {ActivityIndicator, Image, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = () => {
@@ -14,12 +14,12 @@ const SplashScreen = () => {
         navigation.navigate('NoAuthStack');
       }
     }
-    checkUser()
+    checkUser();
   }, []);
 
   const isAuthenticated = async (): Promise<boolean> => {
     //await AsyncStorage.removeItem('token')
-    const token = await AsyncStorage.getItem('token')
+    const token = await AsyncStorage.getItem('token');
     return !!token;
   };
 

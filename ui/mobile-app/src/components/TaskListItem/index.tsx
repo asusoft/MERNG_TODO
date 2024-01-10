@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import icons from '../../icons';
 import {useNavigation} from '@react-navigation/native';
-import { timeAgo } from '../../helpers/timeAgo';
+import {timeAgo} from '../../helpers/timeAgo';
 
 interface TaskListItemProps {
   Item: {
@@ -21,9 +21,11 @@ const TaskListItem = ({Item}: TaskListItemProps) => {
     navigation.navigate('ToDoScreen', {id: Item.id});
   };
 
-  const createdAt = timeAgo(Item.createdAt)
+  const createdAt = timeAgo(Item.createdAt);
   return (
-    <Pressable style={{flexDirection: 'row', gap: 5, marginBottom: 8}} onPress={onItemPress}>
+    <Pressable
+      style={{flexDirection: 'row', gap: 5, marginBottom: 8}}
+      onPress={onItemPress}>
       <Image
         source={icons.file}
         style={{height: 40, width: 40}}

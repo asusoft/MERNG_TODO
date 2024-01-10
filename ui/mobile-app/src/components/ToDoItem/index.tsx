@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, TextInput } from 'react-native';
 import { CheckBox } from '../CheckBox';
-import { useUpdateToDoMutation, useDeleteToDoMutation } from '../../shared/generated/types/graphql';
 
 interface ToDoItemProps {
   todo: {
@@ -10,25 +9,18 @@ interface ToDoItemProps {
     isCompleted: boolean;
   };
   onSubmit: () => void;
+  onDelete: () => void
+  onUpdate: (id: string, checked: boolean, content: string) => void
 }
 
-const ToDoItem = ({ todo, onSubmit }: ToDoItemProps) => {
+const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate }: ToDoItemProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [content, setContent] = useState(todo.content);
-
-  const [updateToDo] = useUpdateToDoMutation()
-  const [deletToDo] = useDeleteToDoMutation()
 
   const inputRef = useRef(null);
 
   const callUpdateToDo = async (checked: boolean) => {
-    await updateToDo({
-      variables: {
-        todoId: todo.id,
-        content,
-        isCompleted: checked
-      }
-    })
+      onUpdate(todo.id, checked, content)
   }
 
   useEffect(() => {
@@ -47,7 +39,7 @@ const ToDoItem = ({ todo, onSubmit }: ToDoItemProps) => {
 
   const onKeyPress = async ({ nativeEvent }) => {
     if (nativeEvent.key === 'Backspace' && content === '') {
-      await deletToDo({variables: {todoId: todo.id}});
+      onDelete();
     }
   };
 
@@ -59,7 +51,8 @@ const ToDoItem = ({ todo, onSubmit }: ToDoItemProps) => {
   return (
     <View
       style={{ flexDirection: 'row', marginVertical: 3, marginHorizontal: 20 }}>
-      <CheckBox isChecked={isChecked}
+      <CheckBox 
+        isChecked={isChecked}
         onPress={onToggleChecked}
       />
       <TextInput
@@ -70,7 +63,7 @@ const ToDoItem = ({ todo, onSubmit }: ToDoItemProps) => {
           flex: 1,
           marginTop: -2,
           fontSize: 18,
-          color: 'white',
+          color: isChecked ? 'grey' : 'white',
           marginLeft: 12,
         }}
         onSubmitEditing={onSubmit}

@@ -1,8 +1,16 @@
 //import liraries
-import { useNavigation } from '@react-navigation/native';
-import React, { Component, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
-import { useSignInMutation } from '../../shared/generated/types/graphql';
+import {useNavigation} from '@react-navigation/native';
+import React, {Component, useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
+import {useSignInMutation} from '../../shared/generated/types/graphql';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // create a component
@@ -10,24 +18,26 @@ const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
-  const [signIn, { error, loading }] = useSignInMutation()
+  const [signIn, {error, loading}] = useSignInMutation();
 
   useEffect(() => {
-    if (error) Alert.alert("Invalid credentials, try again")
-  }, [error])
+    if (error) {
+      Alert.alert('Invalid credentials, try again');
+    }
+  }, [error]);
 
   const onSubmit = async () => {
     const signInInput = {
-      email: email, password: password
-    }
-    const response = await signIn({ variables: { signInInput } })
+      email: email,
+      password: password,
+    };
+    const response = await signIn({variables: {signInInput}});
 
     if (response.data) {
-      AsyncStorage
-        .setItem('token', response.data.signIn.token)
-        .then(() => navigation.navigate('Root'))
+      AsyncStorage.setItem('token', response.data.signIn.token).then(() =>
+        navigation.navigate('Root'),
+      );
     }
-
   };
   return (
     <View style={styles.container}>
@@ -36,7 +46,7 @@ const SignInScreen = () => {
         onChangeText={setEmail}
         placeholder="soft@test.com"
         placeholderTextColor={'grey'}
-        autoCapitalize='none'
+        autoCapitalize="none"
         style={{
           height: 40,
           color: 'white',
@@ -54,7 +64,7 @@ const SignInScreen = () => {
         onChangeText={setPassword}
         placeholder="Your password"
         placeholderTextColor={'grey'}
-        autoCapitalize='none'
+        autoCapitalize="none"
         secureTextEntry
         style={{
           height: 40,
@@ -78,14 +88,13 @@ const SignInScreen = () => {
           justifyContent: 'center',
           marginTop: 22,
         }}>
-        {
-          loading ? <ActivityIndicator />
-            :
-            <Text style={{ fontSize: 16, color: 'white', fontWeight: 'bold' }}>
-              Sign In
-            </Text>
-        }
-
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <Text style={{fontSize: 16, color: 'white', fontWeight: 'bold'}}>
+            Sign In
+          </Text>
+        )}
       </Pressable>
       <Pressable
         onPress={() => navigation.navigate('SignUp')}
@@ -97,8 +106,8 @@ const SignInScreen = () => {
           marginTop: 18,
           flexDirection: 'row',
         }}>
-        <Text style={{ fontSize: 16, color: '#fff' }}>New here? </Text>
-        <Text style={{ fontSize: 16, color: '#e33062' }}>Sign Up</Text>
+        <Text style={{fontSize: 16, color: '#fff'}}>New here? </Text>
+        <Text style={{fontSize: 16, color: '#e33062'}}>Sign Up</Text>
       </Pressable>
     </View>
   );
