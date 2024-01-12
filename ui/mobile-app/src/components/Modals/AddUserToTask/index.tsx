@@ -6,9 +6,10 @@ import Avatar from '../../Avatar';
 type AddUserModalProps = {
     users: User[] | undefined,
     onAdd?: (id: string) => void
+    onRemove?: (id: string) => void
 }
 
-const UsersList = ({ users, onAdd }: AddUserModalProps) => {
+const UsersList = ({ users, onAdd, onRemove }: AddUserModalProps) => {
     return (
         <FlatList
             data={users}
@@ -19,6 +20,9 @@ const UsersList = ({ users, onAdd }: AddUserModalProps) => {
                     { onAdd && <Pressable onPress={() => onAdd(item.id)} style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, height: 25, backgroundColor: '#e33062', marginLeft: "auto", borderRadius: 8, alignSelf: 'flex-end' }}>
                         <Text style={{ color: 'white', fontSize: 12 }}>Add</Text>
                     </Pressable>}
+                    { onRemove && <Pressable onPress={() => onRemove(item.id)} style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, height: 25, backgroundColor: '#e33062', marginLeft: "auto", borderRadius: 8, alignSelf: 'flex-end' }}>
+                        <Text style={{ color: 'white', fontSize: 12 }}>Remove</Text>
+                    </Pressable>}
                 </View>
             )}
             contentContainerStyle={{
@@ -27,7 +31,7 @@ const UsersList = ({ users, onAdd }: AddUserModalProps) => {
             }}
             ListEmptyComponent={
                 <View>
-                    <Text style={{ fontSize: 14, color: 'white' }}>All users have been added</Text>
+                    <Text style={{ fontSize: 14, color: 'white' }}> </Text>
                 </View>
             }
         />

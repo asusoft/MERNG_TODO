@@ -1,8 +1,5 @@
 query GetAllUsers {
   getAllUsers {
-    email
-    id
-    avatar
-    name
+    ...FullUser
   }
 }

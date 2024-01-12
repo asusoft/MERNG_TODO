@@ -21,6 +21,7 @@ import { RouteProp } from '@react-navigation/native';
 import Avatar from '../../components/Avatar';
 import { ProgressBar } from 'react-native-paper';
 import AddUserToTask from '../../components/Modals/AddUserToTask';
+import AddedUsers from '../../components/Modals/AddUserToTask';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AuthStackParamList } from '../../navigation/AuthStack';
 
@@ -178,6 +179,7 @@ const TodosScreen = ({ navigation } : Props) => {
               onDelete={() => actions.deleteTodo(item.id)}
               onUpdate={actions.updateToDo}
               onAssignUser={actions.assignUserToToDO}
+              onUnAssignUser={actions.unAssignUserToToDO}
               users={addedUsers}
             />
           )}
@@ -194,7 +196,7 @@ const TodosScreen = ({ navigation } : Props) => {
         )}
         {showUsers && (
           <View style={styles.addToDo}>
-            <AddUserToTask users={addedUsers} />
+            <AddedUsers users={addedUsers} onRemove={actions.removeUserFromTask}/>
           </View>
         )}
       </SafeAreaView>

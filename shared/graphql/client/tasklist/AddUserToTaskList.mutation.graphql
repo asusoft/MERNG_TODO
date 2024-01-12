@@ -1,10 +1,7 @@
 mutation AddUserToTask($taskListId: ID!, $userId: ID!) {
   addUserToTaskList(taskListId: $taskListId, userId: $userId) {
     users {
-      avatar
-      email
-      id
-      name
+      ...FullUser
     }
   }
 }

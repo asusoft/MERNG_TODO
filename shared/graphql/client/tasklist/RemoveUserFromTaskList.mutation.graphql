@@ -1,0 +1,7 @@
+mutation RemoveUserFromTaskList($taskListId: ID!, $userId: ID!) {
+  removeUserFromTaskList(taskListId: $taskListId, userId: $userId) {
+     users {
+      ...FullUser
+    }
+  }
+}

@@ -5,10 +5,7 @@ query GetTask($taskId: ID!) {
     progress
     title
     users {
-      avatar
-      name
-      email
-      id
+       ...FullUser
     }
     todos {
       ...SimpleTodo

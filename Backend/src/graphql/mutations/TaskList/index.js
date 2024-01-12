@@ -4,5 +4,6 @@ export const TaskListMutations = `
         updateTaskList(id: ID!, title: String!): TaskList!
         deleteTaskList(id: ID!): Boolean!
         addUserToTaskList(taskListId: ID!, userId: ID!): TaskList
+        removeUserFromTaskList(taskListId: ID!, userId: ID!): TaskList
     }
 `;

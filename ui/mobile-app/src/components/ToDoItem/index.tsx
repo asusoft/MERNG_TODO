@@ -4,7 +4,7 @@ import { CheckBox } from '../CheckBox';
 import { SimpleTodoFragment, User } from '../../shared/generated/types/graphql';
 import Avatar from '../Avatar';
 import AddButton from '../AddButton';
-import AddUserToTask from '../Modals/AddUserToTask';
+import AssignUserToToDo from '../Modals/AddUserToTask';
 
 interface ToDoItemProps {
   todo: SimpleTodoFragment;
@@ -12,18 +12,20 @@ interface ToDoItemProps {
   onDelete: () => void
   onUpdate: (id: string, checked: boolean, content: string) => void
   onAssignUser: (id: string, userId: string) => void
+  onUnAssignUser: (id: string, userId: string) => void
   users: User[] | undefined
 }
 
-const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate, onAssignUser, users }: ToDoItemProps) => {
+const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate, onAssignUser, users, onUnAssignUser }: ToDoItemProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [content, setContent] = useState(todo.content);
   const [showAddUser, setAddUser] = useState(false)
+  const [showAssignedUsers, setShowAssignedUsers] = useState(false)
 
   const inputRef = useRef<TextInput>(null);
 
   const callUpdateToDo = async (checked: boolean) => {
-      onUpdate(todo.id, checked, content)
+    onUpdate(todo.id, checked, content)
   }
 
   useEffect(() => {
@@ -52,14 +54,27 @@ const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate, onAssignUser, users }: T
   }
 
   const callAssignUser = (userId: string) => {
-     console.log(userId)
-     onAssignUser(todo.id, userId)
+    onAssignUser(todo.id, userId)
+  }
+
+  const callUnAssignUser = (userId: string) => {
+    onUnAssignUser(todo.id, userId)
+  }
+
+  const toggleListModal = () => {
+    if (showAddUser || (!showAddUser && !showAssignedUsers)) {
+      setAddUser(!showAddUser);
+      setShowAssignedUsers(false); 
+    }
+    else if (showAssignedUsers) {
+      setShowAssignedUsers(false);
+    }
   }
 
   return (
     <View
       style={{ flexDirection: 'row', marginVertical: 3, marginHorizontal: 20, paddingVertical: 8 }}>
-      <CheckBox 
+      <CheckBox
         isChecked={isChecked}
         onPress={onToggleChecked}
       />
@@ -80,25 +95,30 @@ const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate, onAssignUser, users }: T
         onEndEditing={() => callUpdateToDo(isChecked)}
       />
       <View style={{ flexDirection: 'row' }}>
-      <View style={{ flexDirection: 'row', marginLeft: 'auto', marginTop: -2 }}>
+        <View style={{ flexDirection: 'row', marginLeft: 'auto', marginTop: -2 }}>
           {
             todo.assignees?.slice(-5).map((user, index) => (
-              <Pressable onPress={() => {}} key={user.id} style={{ marginLeft: -15 }}>
+              <Pressable onPress={() => setShowAssignedUsers(true)} key={user.id} style={{ marginLeft: -15 }}>
                 <Avatar user={user} dimension={25} index={index} />
               </Pressable>
             ))
           }
         </View>
         <View style={{ marginLeft: 10, marginTop: -2 }}>
-          <AddButton onPress={() => setAddUser(!showAddUser)} dimension={25} icon={showAddUser ? 'cross' : 'plus'} />
+          <AddButton onPress={() => toggleListModal()} dimension={25} icon={showAddUser || showAssignedUsers ? 'cross' : 'plus'} />
         </View>
         {showAddUser && (
           <View style={styles.addToDo}>
-            <AddUserToTask users={users} onAdd={callAssignUser} />
+            <AssignUserToToDo users={users} onAdd={callAssignUser} />
+          </View>
+        )}
+        {showAssignedUsers && (
+          <View style={styles.addToDo}>
+            <AssignUserToToDo users={todo.assignees} onRemove={callUnAssignUser} />
           </View>
         )}
       </View>
-       
+
     </View>
   );
 };

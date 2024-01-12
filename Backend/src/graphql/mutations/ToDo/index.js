@@ -4,5 +4,6 @@ export const ToDoMutations = `
         updateToDo(id: ID!, content: String, isCompleted: Boolean): ToDo!
         deleteToDo(id: ID!): Boolean!
         assignUserToToDo(todoId: ID!, userId: ID!): ToDo!
+        unAssignUserFromToDo(todoId: ID!, userId: ID!): ToDo!
     }
 `;

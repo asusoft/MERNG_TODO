@@ -10,6 +10,8 @@ import {
   useGetAllUsersQuery,
   useAddUserToTaskMutation,
   useAssignUserToToDoMutation,
+  useUnAssignUserFromToDoMutation,
+  useRemoveUserFromTaskListMutation,
 } from '../../../shared/generated/types/graphql';
 import {useIsFocused} from '@react-navigation/native';
 
@@ -30,7 +32,9 @@ export const useToDoList = (id: string) => {
   const [updateToDo] = useUpdateToDoMutation();
   const [deleteToDo] = useDeleteToDoMutation();
   const [addUser] = useAddUserToTaskMutation()
+  const [removeUser] = useRemoveUserFromTaskListMutation()
   const [assignUser] = useAssignUserToToDoMutation()
+  const [unAssignUser] = useUnAssignUserFromToDoMutation()
 
   const actions = {
     getList: async () => {
@@ -99,16 +103,39 @@ export const useToDoList = (id: string) => {
 
       if(response.data){
         setAddedUsers(response.data.addUserToTaskList?.users)
-        setUsers(state => {
-          if (state && Array.isArray(state)) {
-            return state.filter(item => item.id !== userId);
-          }
-          return state;
-        });
+        if(response.data){
+          setUsers(state => {
+            if (state && Array.isArray(state)) {
+              return state.filter(item => item.id !== userId);
+            }
+            return state;
+          });
+        }
+      }
+    },
+    removeUserFromTask: async (userId: string) => {
+      const response = await removeUser({variables: {
+        taskListId: id,
+        userId
+      }})
+
+      if(response.data){
+        refetch()
+        actions.getUnAddedUsers()
       }
     },
     assignUserToToDO: async (todoId: string, userId: string) => {
       const response = await assignUser({variables: {
+        todoId,
+        userId
+      }})
+
+      if(response.data){
+        refetch()
+      }
+    },
+    unAssignUserToToDO: async (todoId: string, userId: string) => {
+      const response = await unAssignUser({variables: {
         todoId,
         userId
       }})

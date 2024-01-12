@@ -1,11 +1,5 @@
 mutation AssignUserToToDo($todoId: ID!, $userId: ID!) {
   assignUserToToDo(todoId: $todoId, userId: $userId) {
-    assignees {
-      id
-      email
-      avatar
-    }
-    content
-    isCompleted
+   ...SimpleTodo
   }
 }

@@ -1,0 +1,6 @@
+fragment FullUser on User {
+    avatar
+    email
+    id
+    name
+}

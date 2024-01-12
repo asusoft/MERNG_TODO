@@ -31,8 +31,10 @@ export type Mutation = {
   createToDo: ToDo;
   deleteTaskList: Scalars['Boolean']['output'];
   deleteToDo: Scalars['Boolean']['output'];
+  removeUserFromTaskList?: Maybe<TaskList>;
   signIn: AuthUser;
   signUp: AuthUser;
+  unAssignUserFromToDo: ToDo;
   updateTaskList: TaskList;
   updateToDo: ToDo;
 };
@@ -71,6 +73,12 @@ export type MutationDeleteToDoArgs = {
 };
 
 
+export type MutationRemoveUserFromTaskListArgs = {
+  taskListId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
 export type MutationSignInArgs = {
   input?: InputMaybe<SignInInput>;
 };
@@ -78,6 +86,12 @@ export type MutationSignInArgs = {
 
 export type MutationSignUpArgs = {
   input?: InputMaybe<SignUpInput>;
+};
+
+
+export type MutationUnAssignUserFromToDoArgs = {
+  todoId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
@@ -191,7 +205,15 @@ export type GetTaskQueryVariables = Exact<{
 }>;
 
 
-export type GetTaskQuery = { __typename?: 'Query', getTaskList: { __typename?: 'TaskList', createdAt: string, id: string, progress: number, title: string, users: Array<{ __typename?: 'User', avatar?: string | null, name: string, email: string, id: string }>, todos: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', id: string, email: string, avatar?: string | null, name: string }> }> } };
+export type GetTaskQuery = { __typename?: 'Query', getTaskList: { __typename?: 'TaskList', createdAt: string, id: string, progress: number, title: string, users: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, todos: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> }> } };
+
+export type RemoveUserFromTaskListMutationVariables = Exact<{
+  taskListId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+}>;
+
+
+export type RemoveUserFromTaskListMutation = { __typename?: 'Mutation', removeUserFromTaskList?: { __typename?: 'TaskList', users: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> } | null };
 
 export type UpdateTaskMutationVariables = Exact<{
   taskId: Scalars['ID']['input'];
@@ -207,7 +229,7 @@ export type AssignUserToToDoMutationVariables = Exact<{
 }>;
 
 
-export type AssignUserToToDoMutation = { __typename?: 'Mutation', assignUserToToDo: { __typename?: 'ToDo', content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', id: string, email: string, avatar?: string | null }> } };
+export type AssignUserToToDoMutation = { __typename?: 'Mutation', assignUserToToDo: { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> } };
 
 export type CreateTodoMutationVariables = Exact<{
   content: Scalars['String']['input'];
@@ -224,6 +246,14 @@ export type DeleteToDoMutationVariables = Exact<{
 
 export type DeleteToDoMutation = { __typename?: 'Mutation', deleteToDo: boolean };
 
+export type UnAssignUserFromToDoMutationVariables = Exact<{
+  todoId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+}>;
+
+
+export type UnAssignUserFromToDoMutation = { __typename?: 'Mutation', unAssignUserFromToDo: { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> } };
+
 export type UpdateToDoMutationVariables = Exact<{
   todoId: Scalars['ID']['input'];
   content?: InputMaybe<Scalars['String']['input']>;
@@ -233,12 +263,12 @@ export type UpdateToDoMutationVariables = Exact<{
 
 export type UpdateToDoMutation = { __typename?: 'Mutation', updateToDo: { __typename?: 'ToDo', content: string, id: string, isCompleted: boolean } };
 
-export type SimpleTodoFragment = { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', id: string, email: string, avatar?: string | null, name: string }> };
+export type SimpleTodoFragment = { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: Array<{ __typename?: 'User', email: string, id: string, avatar?: string | null, name: string }> };
+export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> };
 
 export type SignInMutationVariables = Exact<{
   signInInput?: InputMaybe<SignInInput>;
@@ -252,33 +282,37 @@ export type SignUpMutationVariables = Exact<{
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthUser', token: string, user: { __typename?: 'User', name: string, id: string, email: string, avatar?: string | null } } };
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthUser', token: string, user: { __typename?: 'User', avatar?: string | null, email: string, id: string, name: string } } };
 
+export type FullUserFragment = { __typename?: 'User', avatar?: string | null, email: string, id: string, name: string };
+
+export const FullUserFragmentDoc = gql`
+    fragment FullUser on User {
+  avatar
+  email
+  id
+  name
+}
+    `;
 export const SimpleTodoFragmentDoc = gql`
     fragment SimpleTodo on ToDo {
   id
   content
   isCompleted
   assignees {
-    id
-    email
-    avatar
-    name
+    ...FullUser
   }
 }
-    `;
+    ${FullUserFragmentDoc}`;
 export const AddUserToTaskDocument = gql`
     mutation AddUserToTask($taskListId: ID!, $userId: ID!) {
   addUserToTaskList(taskListId: $taskListId, userId: $userId) {
     users {
-      avatar
-      email
-      id
-      name
+      ...FullUser
     }
   }
 }
-    `;
+    ${FullUserFragmentDoc}`;
 export type AddUserToTaskMutationFn = Apollo.MutationFunction<AddUserToTaskMutation, AddUserToTaskMutationVariables>;
 
 /**
@@ -421,17 +455,15 @@ export const GetTaskDocument = gql`
     progress
     title
     users {
-      avatar
-      name
-      email
-      id
+      ...FullUser
     }
     todos {
       ...SimpleTodo
     }
   }
 }
-    ${SimpleTodoFragmentDoc}`;
+    ${FullUserFragmentDoc}
+${SimpleTodoFragmentDoc}`;
 
 /**
  * __useGetTaskQuery__
@@ -465,6 +497,42 @@ export type GetTaskQueryHookResult = ReturnType<typeof useGetTaskQuery>;
 export type GetTaskLazyQueryHookResult = ReturnType<typeof useGetTaskLazyQuery>;
 export type GetTaskSuspenseQueryHookResult = ReturnType<typeof useGetTaskSuspenseQuery>;
 export type GetTaskQueryResult = Apollo.QueryResult<GetTaskQuery, GetTaskQueryVariables>;
+export const RemoveUserFromTaskListDocument = gql`
+    mutation RemoveUserFromTaskList($taskListId: ID!, $userId: ID!) {
+  removeUserFromTaskList(taskListId: $taskListId, userId: $userId) {
+    users {
+      ...FullUser
+    }
+  }
+}
+    ${FullUserFragmentDoc}`;
+export type RemoveUserFromTaskListMutationFn = Apollo.MutationFunction<RemoveUserFromTaskListMutation, RemoveUserFromTaskListMutationVariables>;
+
+/**
+ * __useRemoveUserFromTaskListMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserFromTaskListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserFromTaskListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserFromTaskListMutation, { data, loading, error }] = useRemoveUserFromTaskListMutation({
+ *   variables: {
+ *      taskListId: // value for 'taskListId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useRemoveUserFromTaskListMutation(baseOptions?: Apollo.MutationHookOptions<RemoveUserFromTaskListMutation, RemoveUserFromTaskListMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveUserFromTaskListMutation, RemoveUserFromTaskListMutationVariables>(RemoveUserFromTaskListDocument, options);
+      }
+export type RemoveUserFromTaskListMutationHookResult = ReturnType<typeof useRemoveUserFromTaskListMutation>;
+export type RemoveUserFromTaskListMutationResult = Apollo.MutationResult<RemoveUserFromTaskListMutation>;
+export type RemoveUserFromTaskListMutationOptions = Apollo.BaseMutationOptions<RemoveUserFromTaskListMutation, RemoveUserFromTaskListMutationVariables>;
 export const UpdateTaskDocument = gql`
     mutation UpdateTask($taskId: ID!, $title: String!) {
   updateTaskList(id: $taskId, title: $title) {
@@ -502,16 +570,10 @@ export type UpdateTaskMutationOptions = Apollo.BaseMutationOptions<UpdateTaskMut
 export const AssignUserToToDoDocument = gql`
     mutation AssignUserToToDo($todoId: ID!, $userId: ID!) {
   assignUserToToDo(todoId: $todoId, userId: $userId) {
-    assignees {
-      id
-      email
-      avatar
-    }
-    content
-    isCompleted
+    ...SimpleTodo
   }
 }
-    `;
+    ${SimpleTodoFragmentDoc}`;
 export type AssignUserToToDoMutationFn = Apollo.MutationFunction<AssignUserToToDoMutation, AssignUserToToDoMutationVariables>;
 
 /**
@@ -610,6 +672,40 @@ export function useDeleteToDoMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteToDoMutationHookResult = ReturnType<typeof useDeleteToDoMutation>;
 export type DeleteToDoMutationResult = Apollo.MutationResult<DeleteToDoMutation>;
 export type DeleteToDoMutationOptions = Apollo.BaseMutationOptions<DeleteToDoMutation, DeleteToDoMutationVariables>;
+export const UnAssignUserFromToDoDocument = gql`
+    mutation unAssignUserFromToDo($todoId: ID!, $userId: ID!) {
+  unAssignUserFromToDo(todoId: $todoId, userId: $userId) {
+    ...SimpleTodo
+  }
+}
+    ${SimpleTodoFragmentDoc}`;
+export type UnAssignUserFromToDoMutationFn = Apollo.MutationFunction<UnAssignUserFromToDoMutation, UnAssignUserFromToDoMutationVariables>;
+
+/**
+ * __useUnAssignUserFromToDoMutation__
+ *
+ * To run a mutation, you first call `useUnAssignUserFromToDoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnAssignUserFromToDoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unAssignUserFromToDoMutation, { data, loading, error }] = useUnAssignUserFromToDoMutation({
+ *   variables: {
+ *      todoId: // value for 'todoId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUnAssignUserFromToDoMutation(baseOptions?: Apollo.MutationHookOptions<UnAssignUserFromToDoMutation, UnAssignUserFromToDoMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnAssignUserFromToDoMutation, UnAssignUserFromToDoMutationVariables>(UnAssignUserFromToDoDocument, options);
+      }
+export type UnAssignUserFromToDoMutationHookResult = ReturnType<typeof useUnAssignUserFromToDoMutation>;
+export type UnAssignUserFromToDoMutationResult = Apollo.MutationResult<UnAssignUserFromToDoMutation>;
+export type UnAssignUserFromToDoMutationOptions = Apollo.BaseMutationOptions<UnAssignUserFromToDoMutation, UnAssignUserFromToDoMutationVariables>;
 export const UpdateToDoDocument = gql`
     mutation UpdateToDo($todoId: ID!, $content: String, $isCompleted: Boolean) {
   updateToDo(id: $todoId, content: $content, isCompleted: $isCompleted) {
@@ -650,13 +746,10 @@ export type UpdateToDoMutationOptions = Apollo.BaseMutationOptions<UpdateToDoMut
 export const GetAllUsersDocument = gql`
     query GetAllUsers {
   getAllUsers {
-    email
-    id
-    avatar
-    name
+    ...FullUser
   }
 }
-    `;
+    ${FullUserFragmentDoc}`;
 
 /**
  * __useGetAllUsersQuery__
@@ -694,14 +787,11 @@ export const SignInDocument = gql`
   signIn(input: $signInInput) {
     token
     user {
-      avatar
-      email
-      id
-      name
+      ...FullUser
     }
   }
 }
-    `;
+    ${FullUserFragmentDoc}`;
 export type SignInMutationFn = Apollo.MutationFunction<SignInMutation, SignInMutationVariables>;
 
 /**
@@ -733,14 +823,11 @@ export const SignUpDocument = gql`
   signUp(input: $input) {
     token
     user {
-      name
-      id
-      email
-      avatar
+      ...FullUser
     }
   }
 }
-    `;
+    ${FullUserFragmentDoc}`;
 export type SignUpMutationFn = Apollo.MutationFunction<SignUpMutation, SignUpMutationVariables>;
 
 /**
