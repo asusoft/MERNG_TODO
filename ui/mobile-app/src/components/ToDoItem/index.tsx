@@ -1,21 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, TextInput, NativeSyntheticEvent, TextInputKeyPressEventData } from 'react-native';
+import { View, TextInput, NativeSyntheticEvent, TextInputKeyPressEventData, Pressable, StyleSheet } from 'react-native';
 import { CheckBox } from '../CheckBox';
+import { SimpleTodoFragment, User } from '../../shared/generated/types/graphql';
+import Avatar from '../Avatar';
+import AddButton from '../AddButton';
+import AddUserToTask from '../Modals/AddUserToTask';
 
 interface ToDoItemProps {
-  todo: {
-    id: string;
-    content: string;
-    isCompleted: boolean;
-  };
+  todo: SimpleTodoFragment;
   onSubmit: () => void;
   onDelete: () => void
   onUpdate: (id: string, checked: boolean, content: string) => void
+  onAssignUser: (id: string, userId: string) => void
+  users: User[] | undefined
 }
 
-const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate }: ToDoItemProps) => {
+const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate, onAssignUser, users }: ToDoItemProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [content, setContent] = useState(todo.content);
+  const [showAddUser, setAddUser] = useState(false)
 
   const inputRef = useRef<TextInput>(null);
 
@@ -48,9 +51,14 @@ const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate }: ToDoItemProps) => {
     callUpdateToDo(!isChecked)
   }
 
+  const callAssignUser = (userId: string) => {
+     console.log(userId)
+     onAssignUser(todo.id, userId)
+  }
+
   return (
     <View
-      style={{ flexDirection: 'row', marginVertical: 3, marginHorizontal: 20 }}>
+      style={{ flexDirection: 'row', marginVertical: 3, marginHorizontal: 20, paddingVertical: 8 }}>
       <CheckBox 
         isChecked={isChecked}
         onPress={onToggleChecked}
@@ -71,8 +79,41 @@ const ToDoItem = ({ todo, onSubmit, onDelete, onUpdate }: ToDoItemProps) => {
         onKeyPress={onKeyPress}
         onEndEditing={() => callUpdateToDo(isChecked)}
       />
+      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row', marginLeft: 'auto', marginTop: -2 }}>
+          {
+            todo.assignees?.slice(-5).map((user, index) => (
+              <Pressable onPress={() => {}} key={user.id} style={{ marginLeft: -15 }}>
+                <Avatar user={user} dimension={25} index={index} />
+              </Pressable>
+            ))
+          }
+        </View>
+        <View style={{ marginLeft: 10, marginTop: -2 }}>
+          <AddButton onPress={() => setAddUser(!showAddUser)} dimension={25} icon={showAddUser ? 'cross' : 'plus'} />
+        </View>
+        {showAddUser && (
+          <View style={styles.addToDo}>
+            <AddUserToTask users={users} onAdd={callAssignUser} />
+          </View>
+        )}
+      </View>
+       
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  addToDo: {
+    position: 'absolute',
+    backgroundColor: '#22303c',
+    marginLeft: "auto",
+    right: 30,
+    top: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'grey',
+  },
+});
 
 export default ToDoItem;

@@ -71,12 +71,10 @@ const TodosScreen = ({ navigation } : Props) => {
   }
 
   const toggleListModal = () => {
-    // If showAddUser is true or both are false, toggle showAddUser
     if (showAddUser || (!showAddUser && !showUsers)) {
       setShowAddUser(!showAddUser);
-      setShowUsers(false); // Ensure showUsers is always false in this case
+      setShowUsers(false); 
     }
-    // If only showUsers is true, close it
     else if (showUsers) {
       setShowUsers(false);
     }
@@ -179,6 +177,8 @@ const TodosScreen = ({ navigation } : Props) => {
               onSubmit={() => actions.createNew(index + 1)}
               onDelete={() => actions.deleteTodo(item.id)}
               onUpdate={actions.updateToDo}
+              onAssignUser={actions.assignUserToToDO}
+              users={addedUsers}
             />
           )}
           ListEmptyComponent={

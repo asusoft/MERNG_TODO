@@ -3,5 +3,6 @@ export const ToDoMutations = `
         createToDo(content: String!, taskListId: ID!): ToDo!
         updateToDo(id: ID!, content: String, isCompleted: Boolean): ToDo!
         deleteToDo(id: ID!): Boolean!
+        assignUserToToDo(todoId: ID!, userId: ID!): ToDo!
     }
 `;

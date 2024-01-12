@@ -9,6 +9,7 @@ import {
   User,
   useGetAllUsersQuery,
   useAddUserToTaskMutation,
+  useAssignUserToToDoMutation,
 } from '../../../shared/generated/types/graphql';
 import {useIsFocused} from '@react-navigation/native';
 
@@ -29,6 +30,7 @@ export const useToDoList = (id: string) => {
   const [updateToDo] = useUpdateToDoMutation();
   const [deleteToDo] = useDeleteToDoMutation();
   const [addUser] = useAddUserToTaskMutation()
+  const [assignUser] = useAssignUserToToDoMutation()
 
   const actions = {
     getList: async () => {
@@ -60,6 +62,7 @@ export const useToDoList = (id: string) => {
         id: response.data?.createToDo?.id || '',
         content: '',
         isCompleted: false,
+        assignees: []
       });
 
       setList(newTodos);
@@ -103,6 +106,16 @@ export const useToDoList = (id: string) => {
           return state;
         });
       }
+    },
+    assignUserToToDO: async (todoId: string, userId: string) => {
+      const response = await assignUser({variables: {
+        todoId,
+        userId
+      }})
+
+      if(response.data){
+        refetch()
+      }
     }
   };
 
@@ -128,6 +141,6 @@ export const useToDoList = (id: string) => {
     title,
     addedUsers,
     users,
-    progress
+    progress,
   };
 };

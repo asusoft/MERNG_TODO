@@ -5,5 +5,6 @@ export const TodoType = `
         isCompleted: Boolean!
         taskListId: ID!
         taskList: TaskList!
+        assignees: [User!]!
     }
 `;

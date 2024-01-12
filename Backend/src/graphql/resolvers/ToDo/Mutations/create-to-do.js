@@ -7,6 +7,7 @@ export const createToDoResolver = async (_, { content, taskListId }, { db, user 
         content,
         taskListId: new ObjectId(taskListId),
         isCompleted: false,
+        assigneesId: []
     }
 
     const result = await db.collection('ToDos').insertOne(newToDo)

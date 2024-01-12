@@ -4,18 +4,14 @@
     isCompleted: Boolean!
     taskListId: ID!
     taskList: TaskList!
-}
-
-type SimpleTodo {
-    id: ID!
-    content: String!
-    isCompleted: Boolean!
+    assignees: [User!]!
 }
 
 extend type Mutation {
     createToDo(content: String!, taskListId: ID!): ToDo!
     updateToDo(id: ID!, content: String, isCompleted: Boolean): ToDo!
     deleteToDo(id: ID!): Boolean!
+    assignUserToToDo(todoId: ID!, userId: ID!): ToDo!
 }
 
 extend type Query {

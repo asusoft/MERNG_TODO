@@ -17,7 +17,7 @@ const UsersList = ({ users, onAdd }: AddUserModalProps) => {
                     <Avatar user={item} dimension={25} index={index} />
                     <Text style={{ fontSize: 18, color: 'white', marginLeft: 10, marginRight: 8 }}>{item.name.split(' ')[0]}</Text>
                     { onAdd && <Pressable onPress={() => onAdd(item.id)} style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, height: 25, backgroundColor: '#e33062', marginLeft: "auto", borderRadius: 8, alignSelf: 'flex-end' }}>
-                        <Text style={{ color: 'white', fontSize: 16 }}>Add</Text>
+                        <Text style={{ color: 'white', fontSize: 12 }}>Add</Text>
                     </Pressable>}
                 </View>
             )}

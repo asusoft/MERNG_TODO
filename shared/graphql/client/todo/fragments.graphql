@@ -2,4 +2,10 @@ fragment SimpleTodo on ToDo {
     id
     content
     isCompleted
+    assignees {
+      id
+      email
+      avatar
+      name
+    }
 }
