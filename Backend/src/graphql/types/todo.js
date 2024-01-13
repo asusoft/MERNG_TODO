@@ -6,5 +6,6 @@ export const TodoType = `
         taskListId: ID!
         taskList: TaskList!
         assignees: [User!]!
+        subtasks: [ToDo!]!
     }
 `;
