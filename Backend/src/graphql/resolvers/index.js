@@ -7,7 +7,7 @@ import { ToDoMutationResolvers } from './ToDo/Mutations/index.js';
 import { ToDoCustomResolvers } from './ToDo/index.js';
 import { UserQueriesResolvers } from './User/Queries/index.js';
 import { ToDoQueriesResolvers } from './ToDo/Queries/index.js';
-import { UploadFileResolver } from './upload-file.js';
+import { FilesMutationResolvers } from './Files/mutations/index.js';
 
 const resolvers = {
     Query: {
@@ -19,7 +19,7 @@ const resolvers = {
         ...UserMutationResolvers,
         ...TaskListMutationResolvers,
         ...ToDoMutationResolvers,
-        uploadFile: UploadFileResolver
+        ...FilesMutationResolvers
     },
     ...UserCustomResolvers,
     ...TaskListCustomResolvers,

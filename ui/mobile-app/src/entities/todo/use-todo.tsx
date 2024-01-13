@@ -72,7 +72,6 @@ export const useToDo = (id: string) => {
       refetch();
     },
     assignUserToToDo: async ( userId: string) => {
-      console.log('assigend')
       const response = await assignUser({
         variables: {
           todoId: id,

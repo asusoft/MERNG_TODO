@@ -1,9 +1,7 @@
-import { admin } from  'firebase-admin'
-
-const serviceAccount = require('./firebase.json')
+import admin from  'firebase-admin'
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert('./firebase.json'),
     storageBucket: 'taskade-318da.appspot.com'
 });
 

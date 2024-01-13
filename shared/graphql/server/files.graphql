@@ -1,0 +1,16 @@
+scalar Upload
+
+type File {
+    id: ID!
+    createdAt: String!
+    updatedAt: String!
+    name: String
+    path: String!
+    type: String!
+    checksum: String
+    size: Int
+}
+
+extend type Mutation {
+    uploadFile(file: Upload!): String!
+}

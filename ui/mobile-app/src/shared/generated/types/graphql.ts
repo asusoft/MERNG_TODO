@@ -15,12 +15,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  Upload: { input: any; output: any; }
 };
 
 export type AuthUser = {
   __typename?: 'AuthUser';
   token: Scalars['String']['output'];
   user: User;
+};
+
+export type File = {
+  __typename?: 'File';
+  checksum?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  path: Scalars['String']['output'];
+  size?: Maybe<Scalars['Int']['output']>;
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
 };
 
 export type Mutation = {
@@ -37,6 +50,7 @@ export type Mutation = {
   unAssignUserFromToDo: ToDo;
   updateTaskList: TaskList;
   updateToDo: ToDo;
+  uploadFile: Scalars['String']['output'];
 };
 
 
@@ -108,6 +122,11 @@ export type MutationUpdateToDoArgs = {
   isCompleted?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
+export type MutationUploadFileArgs = {
+  file: Scalars['Upload']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getAllUsers: Array<User>;
@@ -174,6 +193,13 @@ export type User = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
+
+export type UploadFileMutationVariables = Exact<{
+  file: Scalars['Upload']['input'];
+}>;
+
+
+export type UploadFileMutation = { __typename?: 'Mutation', uploadFile: string };
 
 export type AddUserToTaskMutationVariables = Exact<{
   taskListId: Scalars['ID']['input'];
@@ -336,6 +362,37 @@ export const SimpleTodoFragmentDoc = gql`
 }
     ${FullUserFragmentDoc}
 ${SimpleSubtaskFragmentDoc}`;
+export const UploadFileDocument = gql`
+    mutation UploadFile($file: Upload!) {
+  uploadFile(file: $file)
+}
+    `;
+export type UploadFileMutationFn = Apollo.MutationFunction<UploadFileMutation, UploadFileMutationVariables>;
+
+/**
+ * __useUploadFileMutation__
+ *
+ * To run a mutation, you first call `useUploadFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUploadFileMutation(baseOptions?: Apollo.MutationHookOptions<UploadFileMutation, UploadFileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadFileMutation, UploadFileMutationVariables>(UploadFileDocument, options);
+      }
+export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
+export type UploadFileMutationResult = Apollo.MutationResult<UploadFileMutation>;
+export type UploadFileMutationOptions = Apollo.BaseMutationOptions<UploadFileMutation, UploadFileMutationVariables>;
 export const AddUserToTaskDocument = gql`
     mutation AddUserToTask($taskListId: ID!, $userId: ID!) {
   addUserToTaskList(taskListId: $taskListId, userId: $userId) {

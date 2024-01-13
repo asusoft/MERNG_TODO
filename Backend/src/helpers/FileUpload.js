@@ -1,15 +1,21 @@
-import { uuidv4 } from 'uuid'
+import { v4 } from 'uuid'
 import { bucket } from '../../init-firebase.js'
 
 export const FileUpload = async (path) => {
-    bucket.upload(path, {
-        destination: 'files/avatars',
-        metadata: {
-            metadata: {firebaseStorageDownloadTokens: uuidv4()}
-        }
-    }).then(res => {
-        return res
-    }).catch(err=>{
-        return err
-    })
-}
+    try {
+        const res = await bucket.upload(path, {
+            destination: 'files/avatars.jpg',
+            metadata: {
+                metadata: { firebaseStorageDownloadTokens: v4() }
+            }
+        });
+
+        const file = res[0];
+        const signedUrlConfig = { action: 'read', expires: '03-09-2491' };
+        const [url] = await file.getSignedUrl(signedUrlConfig);
+
+        return url;
+    } catch (error) {
+        throw error;
+    }
+};

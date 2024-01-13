@@ -7,11 +7,12 @@ type AvatarProps = {
   user: User | undefined;
   dimension: number;
   index: number;
+  url?: string | null | undefined
 };
 
 const COLORS = ['green', 'blue', 'purple', 'grey', 'pink'];
 
-const Avatar = ({user, dimension, index}: AvatarProps) => {
+const Avatar = ({user, dimension, index, url}: AvatarProps) => {
   const ind = index % 4;
   const bg = COLORS[ind];
   return (
@@ -27,8 +28,8 @@ const Avatar = ({user, dimension, index}: AvatarProps) => {
         borderWidth: 3,
         borderColor: "#15202b"
       }}>
-      {user?.avatar ? (
-        <Image />
+      {url ? (
+        <Image source={{ uri: url || ''}} style={{ height: dimension, width: dimension, borderRadius: dimension, resizeMode: 'contain'}}/>
       ) : (
         <Text
           style={{

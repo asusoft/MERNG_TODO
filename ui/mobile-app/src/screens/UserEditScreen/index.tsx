@@ -4,6 +4,8 @@ import icons from '../../icons';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { useUser } from '../../entities/user/use-user';
 import Avatar from '../../components/Avatar';
+import { pickFromDevice } from '../../lib/pick-from-device';
+import { useUploadFileMutation } from '../../shared/generated/types/graphql';
 
 
 const UserEditScreen = () => {
@@ -11,6 +13,8 @@ const UserEditScreen = () => {
     const { user, actions } = useUser()
     const [editName, setEditName] = useState(false)
     const [newName, setName] = useState(user?.name);
+    const [uploadImage] = useUploadFileMutation()
+    const [avatar, setAvatar] = useState(user?.avatar)
 
     const inputRef = useRef<TextInput>(null);
 
@@ -33,6 +37,21 @@ const UserEditScreen = () => {
         }
     };
 
+    const onChooseImagePress = async () => {
+        const { RNFile } = await pickFromDevice('photo', {
+          height: 1024,
+          width: 1024,
+          withCircleOverlay: true,
+        })
+        const response = await uploadImage({ variables: { file: RNFile } })
+
+        if(response.data) {
+            setAvatar(response.data.uploadFile)
+        }
+
+        console.log(response)
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ margin: 20 }}>
@@ -43,7 +62,7 @@ const UserEditScreen = () => {
                     />
                 </Pressable>
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Avatar user={user} dimension={120} index={2} />
+                    <Avatar user={user} dimension={120} index={2} url={avatar} />
                     <View style={{ marginTop: 10, flexDirection: 'row' }}>
                         <TextInput
                             ref={inputRef}
@@ -68,7 +87,7 @@ const UserEditScreen = () => {
                             />
                         </Pressable>
                     </View>
-                    <Pressable style={{ bottom: 50, right: 120, width: 30, height: 30, borderRadius: 15, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.8)', padding: 8, alignItems: 'center', justifyContent: 'center'}}>
+                    <Pressable onPress={onChooseImagePress} style={{ bottom: 50, right: 120, width: 30, height: 30, borderRadius: 15, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.8)', padding: 8, alignItems: 'center', justifyContent: 'center'}}>
                        <Image source={icons.camera} style={{ height: 15, width: 15, tintColor: 'white'}} />
                     </Pressable>
                 </View>
