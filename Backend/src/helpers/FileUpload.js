@@ -1,7 +1,7 @@
 import { uuidv4 } from 'uuid'
-import { bucket } from '../../init-firebase'
+import { bucket } from '../../init-firebase.js'
 
-export const uploadFile = (path) => {
+export const FileUpload = async (path) => {
     bucket.upload(path, {
         destination: 'files/avatars',
         metadata: {
