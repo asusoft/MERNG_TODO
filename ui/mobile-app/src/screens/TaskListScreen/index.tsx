@@ -6,16 +6,26 @@ import {
   View,
   StyleSheet,
   Text,
+  Pressable,
 } from 'react-native';
 import TaskListItem from '../../components/TaskListItem';
 import AddButton from '../../components/AddButton';
 import CreateModal from '../../components/Modals/create-todo';
-import {useTaskList} from './model/use-task-list';
+import {useTaskList} from '../../entities/taskList/use-task-list';
+import Avatar from '../../components/Avatar';
+import { useUser } from '../../entities/user/use-user';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
 export const TaskListScreen = () => {
   const [isAddTask, setIsAddTask] = useState(false);
   const [title, setTitle] = useState('');
   const {list, createNewTask, loading, deleteTask} = useTaskList();
+  const { user, actions: userActions} = useUser()
+  
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const onItemPress = () => {
+    
+  };
 
   const onCreate = async () => {
     if (title !== '') {
@@ -40,10 +50,15 @@ export const TaskListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 20,}}>
       <Text
-        style={{margin: 20, fontSize: 30, fontWeight: 'bold', color: 'white'}}>
+        style={{ fontSize: 30, fontWeight: 'bold', color: 'white'}}>
         My Tasks
       </Text>
+      <Pressable onPress={() => navigation.navigate('UserEditScreen', {id: user?.id})}>
+        <Avatar user={user} dimension={40} index={2}/>
+      </Pressable>
+      </View>
       <FlatList
         data={list}
         renderItem={({item}) => (

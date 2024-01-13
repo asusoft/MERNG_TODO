@@ -4,7 +4,7 @@ import {View, Text, StyleSheet, Image} from 'react-native';
 import {User} from '../../shared/generated/types/graphql';
 
 type AvatarProps = {
-  user: User;
+  user: User | undefined;
   dimension: number;
   index: number;
 };
@@ -24,8 +24,10 @@ const Avatar = ({user, dimension, index}: AvatarProps) => {
         width: dimension,
         borderRadius: dimension / 2,
         backgroundColor: bg,
+        borderWidth: 3,
+        borderColor: "#15202b"
       }}>
-      {user.avatar ? (
+      {user?.avatar ? (
         <Image />
       ) : (
         <Text
@@ -34,7 +36,7 @@ const Avatar = ({user, dimension, index}: AvatarProps) => {
             fontWeight: 'bold',
             color: 'white',
           }}>
-          {user.name[0]?.toUpperCase()}
+          {user?.name[0]?.toUpperCase()}
         </Text>
       )}
     </View>

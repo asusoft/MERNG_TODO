@@ -5,7 +5,7 @@ import {
   useCreateTaskMutation,
   useGetMyTaskListsLazyQuery,
   useDeleteTaskMutation,
-} from '../../../shared/generated/types/graphql';
+} from '../../shared/generated/types/graphql';
 import {useIsFocused} from '@react-navigation/native';
 
 export const useTaskList = () => {

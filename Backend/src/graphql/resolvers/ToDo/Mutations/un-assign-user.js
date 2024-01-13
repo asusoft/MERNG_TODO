@@ -20,7 +20,7 @@ export const unAssignUserToToDoResolver = async (_, { todoId, userId }, { db, us
         })
 
     if (result.acknowledged) {
-        todo.assigneesId.push( new ObjectId(userId))
+        todo.assigneesId = todo.assigneesId.filter(id => id.toString() !== userId.toString());
         return todo
     }
 

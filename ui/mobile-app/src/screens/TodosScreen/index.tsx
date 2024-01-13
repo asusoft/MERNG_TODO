@@ -16,7 +16,7 @@ import ToDoItem from '../../components/ToDoItem';
 import {useRoute} from '@react-navigation/native';
 import AddButton from '../../components/AddButton';
 import icons from '../../icons';
-import {useToDoList} from './model/use-todo-list';
+import {useToDoList} from '../../entities/todo/use-todo-list';
 import {RouteProp} from '@react-navigation/native';
 import Avatar from '../../components/Avatar';
 import {ProgressBar} from 'react-native-paper';
@@ -126,7 +126,7 @@ const TodosScreen = ({navigation}: Props) => {
             <Pressable
               onPress={() => setShowUsers(true)}
               key={user.id}
-              style={{marginLeft: -20}}>
+              style={{marginLeft: -15}}>
               <Avatar user={user} dimension={30} index={index} />
             </Pressable>
           ))}
@@ -192,8 +192,6 @@ const TodosScreen = ({navigation}: Props) => {
               onSubmit={() => actions.createNew(index + 1)}
               onDelete={() => actions.deleteTodo(item.id)}
               onUpdate={actions.updateToDo}
-              onAssignUser={actions.assignUserToToDO}
-              onUnAssignUser={actions.unAssignUserToToDO}
               users={addedUsers}
             />
           )}

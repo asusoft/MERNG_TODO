@@ -6,4 +6,7 @@ export const mutations = `
   ${UserMutations}
   ${TaskListMutations}
   ${ToDoMutations}
+  type Mutation {
+    uploadFile(file: Upload!): String!
+}
 `;

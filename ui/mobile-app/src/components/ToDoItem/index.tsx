@@ -17,15 +17,13 @@ import AddButton from '../AddButton';
 import AssignUserToToDo from '../Modals/AddUserToTask';
 import icons from '../../icons';
 import SubtaskItem from '../SubtaskItem';
-import { useToDo } from '../../screens/TodosScreen/model/use-todo';
+import { useToDo } from '../../entities/todo/use-todo';
 
 interface ToDoItemProps {
   todo: SimpleTodoFragment;
   onSubmit: () => void;
   onDelete: () => void;
   onUpdate: (id: string, checked: boolean, content: string) => void;
-  onAssignUser: (id: string, userId: string) => void;
-  onUnAssignUser: (id: string, userId: string) => void;
   users: User[] | undefined;
 }
 
@@ -34,9 +32,7 @@ const ToDoItem = ({
   onSubmit,
   onDelete,
   onUpdate,
-  onAssignUser,
   users,
-  onUnAssignUser,
 }: ToDoItemProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const [content, setContent] = useState(todo.content);
@@ -44,7 +40,7 @@ const ToDoItem = ({
   const [showAssignedUsers, setShowAssignedUsers] = useState(false);
   const [showSubtasks, setShowSubtasks] = useState(false);
 
-  const { actions, subtasks} = useToDo(todo.id)
+  const { actions, subtasks, assignedUsers} = useToDo(todo.id)
 
   const inputRef = useRef<TextInput>(null);
 
@@ -80,11 +76,11 @@ const ToDoItem = ({
   };
 
   const callAssignUser = (userId: string) => {
-    onAssignUser(todo.id, userId);
+    actions.assignUserToToDo(userId);
   };
 
   const callUnAssignUser = (userId: string) => {
-    onUnAssignUser(todo.id, userId);
+    actions.unAssignUserFromToDo(userId);
   };
 
   const toggleListModal = () => {
@@ -149,11 +145,11 @@ const ToDoItem = ({
         <View style={{ flexDirection: 'row' }}>
           <View
             style={{ flexDirection: 'row', marginLeft: 'auto', marginTop: -2 }}>
-            {todo.assignees?.slice(-5).map((user, index) => (
+            {assignedUsers?.slice(-5).map((user, index) => (
               <Pressable
                 onPress={() => setShowAssignedUsers(true)}
                 key={user.id}
-                style={{ marginLeft: -15 }}>
+                style={{ marginLeft: -10 }}>
                 <Avatar user={user} dimension={25} index={index} />
               </Pressable>
             ))}
@@ -173,7 +169,7 @@ const ToDoItem = ({
           {showAssignedUsers && (
             <View style={styles.addToDo}>
               <AssignUserToToDo
-                users={todo.assignees}
+                users={assignedUsers}
                 onRemove={callUnAssignUser}
               />
             </View>

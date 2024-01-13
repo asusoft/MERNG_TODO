@@ -29,4 +29,5 @@ extend type Mutation {
 
 extend type Query {
     getAllUsers: [User!]!
+    getMe: User!
 }

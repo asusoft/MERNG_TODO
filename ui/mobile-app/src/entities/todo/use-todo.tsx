@@ -6,10 +6,14 @@ import {
   useDeleteToDoMutation,
   useGetToDoQuery,
   SimpleSubtaskFragment,
-} from '../../../shared/generated/types/graphql';
+  User,
+  useAssignUserToToDoMutation,
+  useUnAssignUserFromToDoMutation,
+} from '../../shared/generated/types/graphql';
 
 export const useToDo = (id: string) => {
   const [subtasks, setSubtasks] = useState<SimpleSubtaskFragment[]>([]);
+  const [assignedUsers, setAssignedUsers] = useState<User[] | undefined>([]);
   const [taskListId, setTasklistId] = useState('');
 
   const {data, loading, error, refetch} = useGetToDoQuery({
@@ -19,6 +23,8 @@ export const useToDo = (id: string) => {
   const [createToDo] = useCreateTodoMutation();
   const [updateToDo] = useUpdateToDoMutation();
   const [deleteToDo] = useDeleteToDoMutation();
+  const [assignUser] = useAssignUserToToDoMutation();
+  const [unAssignUser] = useUnAssignUserFromToDoMutation();
 
   const actions = {
     getList: async () => {
@@ -26,17 +32,14 @@ export const useToDo = (id: string) => {
         const list = data.getToDo.subtasks;
         setSubtasks(list);
         setTasklistId(data.getToDo.taskListId)
+        setAssignedUsers(data.getToDo.assignees)
       }
     },
     createSubTask: async (index: number) => {
       const response = await createToDo({
         variables: {content: '', taskListId, todoId: id},
       });
-
-      console.log("response")
       const newSubtasks = [...subtasks];
-
-      console.log(response)
 
       newSubtasks.splice(index, 0, {
         id: response.data?.createToDo?.id || '',
@@ -67,18 +70,46 @@ export const useToDo = (id: string) => {
         },
       });
       refetch();
-    }
+    },
+    assignUserToToDo: async ( userId: string) => {
+      console.log('assigend')
+      const response = await assignUser({
+        variables: {
+          todoId: id,
+          userId,
+        },
+      });
+      if (response.data) {
+        refetch();
+      }
+    },
+    unAssignUserFromToDo: async (userId: string) => {
+      
+      const response = await unAssignUser({
+        variables: {
+          todoId: id,
+          userId,
+        },
+      });
+      if (response.data) {
+        setAssignedUsers(state => {
+          if (state && Array.isArray(state)) {
+            return state.filter(item => item.id !== userId);
+          }
+          return state;
+        });
+      }
+    },
   };
 
   useEffect(() => {
     actions.getList();
   }, [data]);
 
-  // useEffect(() => {console.log(subtasks)}, [subtasks])
-
   return {
     subtasks,
     actions,
     loading,
+    assignedUsers
   };
 };
