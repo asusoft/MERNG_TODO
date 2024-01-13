@@ -1,0 +1,5 @@
+query GetToDo($todoId: ID!) {
+  getToDo(id: $todoId) {
+    ...SimpleTodo
+  }
+}

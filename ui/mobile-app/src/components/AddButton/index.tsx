@@ -1,21 +1,27 @@
-
 import React from 'react';
-import { StyleSheet, Pressable, Image } from 'react-native';
+import {StyleSheet, Pressable, Image} from 'react-native';
 import icons from '../../icons';
 
 interface ButtonProps {
   onPress: () => void;
-  dimension: number,
-  icon?: 'cross' | 'plus'
+  dimension: number;
+  icon?: 'cross' | 'plus';
 }
 
-const AddButton = ({ onPress, dimension, icon='plus' }: ButtonProps) => {
+const AddButton = ({onPress, dimension, icon = 'plus'}: ButtonProps) => {
   return (
-    <Pressable onPress={onPress} style={{ height: dimension, width: dimension, borderRadius: dimension / 2, ...styles.button}}>
+    <Pressable
+      onPress={onPress}
+      style={{
+        height: dimension,
+        width: dimension,
+        borderRadius: dimension / 2,
+        ...styles.button,
+      }}>
       <Image
         source={icons[icon]}
         style={{
-          height: dimension  / 2 + 5,
+          height: dimension / 2 + 5,
           width: dimension / 2 + 5,
           tintColor: '#fff',
           resizeMode: 'contain',

@@ -5,10 +5,11 @@
     taskListId: ID!
     taskList: TaskList!
     assignees: [User!]!
+    subtasks: [ToDo!]!
 }
 
 extend type Mutation {
-    createToDo(content: String!, taskListId: ID!): ToDo!
+    createToDo(content: String!, taskListId: ID!, todoId: ID): ToDo!
     updateToDo(id: ID!, content: String, isCompleted: Boolean): ToDo!
     deleteToDo(id: ID!): Boolean!
     assignUserToToDo(todoId: ID!, userId: ID!): ToDo!
@@ -16,5 +17,5 @@ extend type Mutation {
 }
 
 extend type Query {
-    getToDo(content: String!, taskListId: ID!): ToDo!
+    getToDo(id: ID!): ToDo!
 }

@@ -1,5 +1,9 @@
 //import liraries
-import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
   View,

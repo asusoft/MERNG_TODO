@@ -13,7 +13,7 @@ export const useTaskList = () => {
   const [list, setList] = useState<SimpleTask[]>([]);
   const {data, loading, error, refetch} = useGetMyTaskListsQuery();
   const [createTask] = useCreateTaskMutation();
-  const [deleteTask] = useDeleteTaskMutation()
+  const [deleteTask] = useDeleteTaskMutation();
 
   const actions = {
     getList: async () => {
@@ -38,8 +38,8 @@ export const useTaskList = () => {
       }
     },
     deleteTask: async (id: string) => {
-      const response = await deleteTask({variables: {deleteTaskListId: id}})
-      if(response.data?.deleteTaskList) {
+      const response = await deleteTask({variables: {deleteTaskListId: id}});
+      if (response.data?.deleteTaskList) {
         setList(state => {
           if (state && Array.isArray(state)) {
             return state.filter(item => item.id !== id);
@@ -47,7 +47,7 @@ export const useTaskList = () => {
           return state;
         });
       }
-    }
+    },
   };
 
   useEffect(() => {

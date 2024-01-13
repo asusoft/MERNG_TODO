@@ -18,23 +18,25 @@ import {useIsFocused} from '@react-navigation/native';
 export const useToDoList = (id: string) => {
   const isFocused = useIsFocused();
   const [list, setList] = useState<SimpleTodoFragment[]>([]);
-  const [users, setUsers] = useState<User[] | undefined>([])
-  const [addedUsers, setAddedUsers] = useState<User[] | undefined>([])
+  const [subtasks, setSubtasks] = useState<SimpleTodoFragment[]>([]);
+  const [users, setUsers] = useState<User[] | undefined>([]);
+  const [addedUsers, setAddedUsers] = useState<User[] | undefined>([]);
   const [title, setTitle] = useState('');
-  const [ progress, setProgess] = useState(0)
+  const [progress, setProgess] = useState(0);
   const {data, loading, error, refetch} = useGetTaskQuery({
     variables: {taskId: id},
   });
-  const {data: unaddedUsers, refetch: refechUnaddedUsers} = useGetAllUsersQuery()
+  const {data: unaddedUsers, refetch: refechUnaddedUsers} =
+    useGetAllUsersQuery();
 
   const [createToDo] = useCreateTodoMutation();
   const [updateTask] = useUpdateTaskMutation();
   const [updateToDo] = useUpdateToDoMutation();
   const [deleteToDo] = useDeleteToDoMutation();
-  const [addUser] = useAddUserToTaskMutation()
-  const [removeUser] = useRemoveUserFromTaskListMutation()
-  const [assignUser] = useAssignUserToToDoMutation()
-  const [unAssignUser] = useUnAssignUserFromToDoMutation()
+  const [addUser] = useAddUserToTaskMutation();
+  const [removeUser] = useRemoveUserFromTaskListMutation();
+  const [assignUser] = useAssignUserToToDoMutation();
+  const [unAssignUser] = useUnAssignUserFromToDoMutation();
 
   const actions = {
     getList: async () => {
@@ -42,19 +44,19 @@ export const useToDoList = (id: string) => {
         const list = data.getTaskList.todos;
         setList(list);
         setTitle(data.getTaskList.title);
-        setAddedUsers(data.getTaskList.users)
-        const prog = data.getTaskList.progress / 100
-        setProgess(prog)
+        setAddedUsers(data.getTaskList.users);
+        const prog = data.getTaskList.progress / 100;
+        setProgess(prog);
       }
     },
     getUnAddedUsers: async () => {
       if (unaddedUsers) {
         const list = unaddedUsers.getAllUsers;
         const unaddedList = list.filter(item => {
-            return !addedUsers?.some(addedUser => addedUser.id === item.id);
+          return !addedUsers?.some(addedUser => addedUser.id === item.id);
         });
         setUsers(unaddedList);
-    }
+      }
     },
     createNew: async (index: number) => {
       const response = await createToDo({
@@ -66,7 +68,8 @@ export const useToDoList = (id: string) => {
         id: response.data?.createToDo?.id || '',
         content: '',
         isCompleted: false,
-        assignees: []
+        assignees: [],
+        subtasks: [],
       });
 
       setList(newTodos);
@@ -93,17 +96,19 @@ export const useToDoList = (id: string) => {
           isCompleted: checked,
         },
       });
-      refetch()
+      refetch();
     },
     addUserToTask: async (userId: string) => {
-      const response = await addUser({variables: {
-        taskListId: id,
-        userId
-      }})
+      const response = await addUser({
+        variables: {
+          taskListId: id,
+          userId,
+        },
+      });
 
-      if(response.data){
-        setAddedUsers(response.data.addUserToTaskList?.users)
-        if(response.data){
+      if (response.data) {
+        setAddedUsers(response.data.addUserToTaskList?.users);
+        if (response.data) {
           setUsers(state => {
             if (state && Array.isArray(state)) {
               return state.filter(item => item.id !== userId);
@@ -114,37 +119,76 @@ export const useToDoList = (id: string) => {
       }
     },
     removeUserFromTask: async (userId: string) => {
-      const response = await removeUser({variables: {
-        taskListId: id,
-        userId
-      }})
+      const response = await removeUser({
+        variables: {
+          taskListId: id,
+          userId,
+        },
+      });
 
-      if(response.data){
-        refetch()
-        actions.getUnAddedUsers()
+      if (response.data) {
+        refetch();
+        actions.getUnAddedUsers();
       }
     },
     assignUserToToDO: async (todoId: string, userId: string) => {
-      const response = await assignUser({variables: {
-        todoId,
-        userId
-      }})
+      const response = await assignUser({
+        variables: {
+          todoId,
+          userId,
+        },
+      });
 
-      if(response.data){
-        refetch()
+      if (response.data) {
+        refetch();
       }
     },
     unAssignUserToToDO: async (todoId: string, userId: string) => {
-      const response = await unAssignUser({variables: {
-        todoId,
-        userId
-      }})
+      const response = await unAssignUser({
+        variables: {
+          todoId,
+          userId,
+        },
+      });
 
-      if(response.data){
-        refetch()
+      if (response.data) {
+        refetch();
       }
-    }
+    },
   };
+
+  const subtaskActions = {
+    create: async (index: number, todoId: string) => {
+      const response = await createToDo({
+        variables: {content: '', taskListId: id, todoId},
+      });
+      const newTodos = [...list];
+
+      newTodos.splice(index, 0, {
+        id: response.data?.createToDo?.id || '',
+        content: '',
+        isCompleted: false,
+        assignees: [],
+        subtasks: [],
+      });
+
+      setList(newTodos);
+    },
+    delete: async (todoId: string) => {
+      const response = await deleteToDo({variables: {todoId}});
+      refetch()
+    },
+    update: async (id: string, checked: boolean, content: string) => {
+      const response = await updateToDo({
+        variables: {
+          todoId: id,
+          content,
+          isCompleted: checked,
+        },
+      });
+      refetch();
+    },
+  }
 
   useEffect(() => {
     actions.getList();
@@ -157,7 +201,7 @@ export const useToDoList = (id: string) => {
   useEffect(() => {
     if (isFocused) {
       refetch();
-      refechUnaddedUsers()
+      refechUnaddedUsers();
     }
   }, [isFocused]);
 
@@ -169,5 +213,6 @@ export const useToDoList = (id: string) => {
     addedUsers,
     users,
     progress,
+    subtaskActions
   };
 };

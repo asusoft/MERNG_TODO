@@ -1,5 +1,9 @@
-import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -11,7 +15,6 @@ import {
 } from 'react-native';
 import {useSignInMutation} from '../../shared/generated/types/graphql';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
@@ -111,7 +114,6 @@ const SignInScreen = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

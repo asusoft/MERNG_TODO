@@ -2,7 +2,11 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import icons from '../../icons';
-import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import {timeAgo} from '../../helpers/timeAgo';
 
 interface TaskListItemProps {
@@ -11,22 +15,21 @@ interface TaskListItemProps {
     title: string;
     createdAt: string;
   };
-  onDelete: () => void
+  onDelete: () => void;
 }
 
 // create a component
 const TaskListItem = ({Item, onDelete}: TaskListItemProps) => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const onItemPress = () => {
-    navigation.navigate('ToDoScreen', { id: Item.id });
+    navigation.navigate('ToDoScreen', {id: Item.id});
   };
 
   const createdAt = timeAgo(Item.createdAt);
   return (
     <Pressable
-      style={{flexDirection: 'row', gap: 5, marginVertical: 12 }}
-      onPress={onItemPress}
-      >
+      style={{flexDirection: 'row', gap: 5, marginVertical: 12}}
+      onPress={onItemPress}>
       <Image
         source={icons.file}
         style={{height: 30, width: 30}}
@@ -38,10 +41,12 @@ const TaskListItem = ({Item, onDelete}: TaskListItemProps) => {
           {createdAt}
         </Text>
       </View>
-      <Pressable onPress={onDelete} style={{ marginLeft: 'auto'}}>
-       <Image source={icons.trash} style={{ height: 25, width: 25, tintColor: '#e33062'}}/>
+      <Pressable onPress={onDelete} style={{marginLeft: 'auto'}}>
+        <Image
+          source={icons.trash}
+          style={{height: 25, width: 25, tintColor: '#e33062'}}
+        />
       </Pressable>
-     
     </Pressable>
   );
 };
