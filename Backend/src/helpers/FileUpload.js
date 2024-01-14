@@ -1,10 +1,10 @@
 import { v4 } from 'uuid'
 import { bucket } from '../../init-firebase.js'
 
-export const FileUpload = async (path) => {
+export const FileUpload = async (input) => {
     try {
-        const res = await bucket.upload(path, {
-            destination: 'files/avatars.jpg',
+        const res = await bucket.upload(input.uri, {
+            destination: input.name,
             metadata: {
                 metadata: { firebaseStorageDownloadTokens: v4() }
             }

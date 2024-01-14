@@ -10,8 +10,6 @@ export const updateUserResolver = async (_, data, { db, user }) => {
             $set: data
         })
 
-        console.log(result)
-
     if (result.acknowledged) {
         const updated = await db.collection('Users').findOne({ _id: new ObjectId(user._id) })
         return updated

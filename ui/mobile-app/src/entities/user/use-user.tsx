@@ -5,17 +5,19 @@ import {
   useGetMeQuery,
   useUpdateUserMutation,
 } from '../../shared/generated/types/graphql';
+import { useIsFocused } from '@react-navigation/native';
 
 export const useUser = () => {
   const [user, setUser] = useState<User | undefined>();
   const { data } = useGetMeQuery()
   const  [updateUser, { loading }] = useUpdateUserMutation()
+  const isFocused = useIsFocused()
 
   const actions = {
     getMe: async () => {
         if(data) {
-            const user = data.getMe
-            setUser(user)
+            const me = data.getMe
+            setUser(me)
         }
     },
     updateMe: async (name?: string, avatar?: string | null) => {
@@ -32,6 +34,12 @@ export const useUser = () => {
   useEffect(() => {
     actions.getMe();
   }, [data]);
+
+  useEffect(() => {
+    if(isFocused){
+      actions.getMe();
+    }
+  }, [isFocused]);
 
   return {
     user,
