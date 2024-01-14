@@ -1,4 +1,6 @@
 export const TodoType = `
+    union ToDoOrBE = ToDo | BaseError
+
     type ToDo {
         id: ID!
         content: String!

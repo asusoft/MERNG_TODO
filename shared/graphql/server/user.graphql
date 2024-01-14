@@ -1,3 +1,6 @@
+union UserOrBE = User | BaseError
+union AuthUserOrBE = AuthUser | BaseError
+
 type User {
     id: ID!
     name: String!
@@ -23,12 +26,12 @@ input SignInInput {
 }
 
 extend type Mutation {
-    signUp(input: SignUpInput): AuthUser!
-    signIn(input: SignInInput): AuthUser!
+    signUp(input: SignUpInput): AuthUserOrBE!
+    signIn(input: SignInInput): AuthUserOrBE!
     updateUser(name: String, avatar: String): User!
 }
 
 extend type Query {
     getAllUsers: [User!]!
-    getMe: User!
+    getMe: UserOrBE!
 }

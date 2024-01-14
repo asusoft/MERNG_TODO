@@ -12,6 +12,7 @@ import {
   TextInput,
   Pressable,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {useSignUpMutation} from '../../shared/generated/types/graphql';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,9 +36,13 @@ const SignUpScreen = () => {
     };
     const response = await signUp({variables: {input: signUpInput}});
     if (response.data) {
+      if(response.data.signUp.__typename === 'AuthUser')
       AsyncStorage.setItem('token', response.data.signUp.token).then(() => {
         navigation.navigate('Root');
       });
+
+      if(response.data.signUp.__typename === 'BaseError')
+      Alert.alert(response.data.signUp.status)
     }
   };
   return (

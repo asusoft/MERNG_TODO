@@ -1,5 +1,10 @@
 query GetMe {
   getMe {
-    ...FullUser
+    ... on User {
+      ...FullUser
+    }
+    ... on BaseError {
+      status
+    }
   }
 }

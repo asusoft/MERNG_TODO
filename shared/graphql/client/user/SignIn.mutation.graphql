@@ -1,8 +1,13 @@
-mutation SignIn($signInInput: SignInInput) {
-  signIn(input: $signInInput) {
-    token
-    user {
-      ...FullUser
+mutation SignIn($input: SignInInput) {
+  signIn(input: $input) {
+    ... on AuthUser {
+      user {
+        ...FullUser
+      }
+      token
+    }
+    ... on BaseError {
+      status
     }
   }
 }

@@ -1,5 +1,10 @@
 mutation unAssignUserFromToDo($todoId: ID!, $userId: ID!) {
   unAssignUserFromToDo(todoId: $todoId, userId: $userId) {
-    ...SimpleTodo
+    ... on ToDo {
+      ...SimpleTodo
+    }
+    ... on BaseError {
+      status
+    }
   }
 }

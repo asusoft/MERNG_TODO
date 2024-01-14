@@ -1,8 +1,13 @@
 mutation SignUp($input: SignUpInput) {
   signUp(input: $input) {
-    token
-    user {
-      ...FullUser
+    ... on AuthUser {
+      user {
+        ...FullUser
+      }
+      token
+    }
+    ... on BaseError {
+      status
     }
   }
 }

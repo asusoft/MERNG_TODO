@@ -1,5 +1,10 @@
 query GetToDo($todoId: ID!) {
   getToDo(id: $todoId) {
-    ...SimpleTodo
+    ... on ToDo {
+      ...SimpleTodo
+    }
+    ... on BaseError {
+      status
+    }
   }
 }

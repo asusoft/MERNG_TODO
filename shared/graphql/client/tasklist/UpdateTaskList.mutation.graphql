@@ -1,5 +1,10 @@
 mutation UpdateTask($taskId: ID!, $title: String!) {
   updateTaskList(id: $taskId, title: $title) {
-    id
+    ... on TaskList {
+      id
+    }
+    ... on BaseError {
+      status
+    }
   }
 }

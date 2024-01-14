@@ -1,11 +1,16 @@
 mutation CreateTodo($content: String!, $taskListId: ID!, $todoId: ID) {
   createToDo(content: $content, taskListId: $taskListId, todoId: $todoId) {
-    id
-    content
-    isCompleted
-    taskList {
+    ... on ToDo {
       id
-      progress
+      content
+      isCompleted
+      taskList {
+        id
+        progress
+      }
+    }
+    ... on BaseError {
+      status
     }
   }
 }

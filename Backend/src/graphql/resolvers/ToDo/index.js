@@ -11,4 +11,15 @@ export const ToDoCustomResolvers = {
         ),
         subtasks: async ({ _id }, _, { db }) => await db.collection('ToDos').find({ todoId: new ObjectId(_id) }).toArray(),
     },
+    ToDoOrBE: {
+        __resolveType(obj, _, __){
+            if(obj._id || obj.id){
+                return 'ToDo';
+            }
+            if(obj.status){
+                return 'BaseError';
+            }
+            return null;
+        },
+    },
 };

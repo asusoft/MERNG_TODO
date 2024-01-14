@@ -1,5 +1,5 @@
-import React, { Component, useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Image, SafeAreaView, TextInput } from 'react-native';
+import React, {  useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, Pressable, Image, SafeAreaView, TextInput } from 'react-native';
 import icons from '../../icons';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { useUser } from '../../entities/user/use-user';

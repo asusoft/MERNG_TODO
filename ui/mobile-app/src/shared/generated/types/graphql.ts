@@ -24,6 +24,22 @@ export type AuthUser = {
   user: User;
 };
 
+export type AuthUserOrBe = AuthUser | BaseError;
+
+export type BaseError = {
+  __typename?: 'BaseError';
+  status: ErrorStatus;
+};
+
+export enum ErrorStatus {
+  AlreadyDone = 'ALREADY_DONE',
+  AlreadyExist = 'ALREADY_EXIST',
+  InvalidInputData = 'INVALID_INPUT_DATA',
+  NotAuthenticated = 'NOT_AUTHENTICATED',
+  NotEnoughPermissions = 'NOT_ENOUGH_PERMISSIONS',
+  NotFound = 'NOT_FOUND'
+}
+
 export type File = {
   __typename?: 'File';
   checksum?: Maybe<Scalars['String']['output']>;
@@ -36,20 +52,22 @@ export type File = {
   updatedAt: Scalars['String']['output'];
 };
 
+export type ListOrBe = BaseError | TaskListArray;
+
 export type Mutation = {
   __typename?: 'Mutation';
-  addUserToTaskList?: Maybe<TaskList>;
-  assignUserToToDo: ToDo;
-  createTaskList: TaskList;
-  createToDo: ToDo;
+  addUserToTaskList?: Maybe<TaskListOrBe>;
+  assignUserToToDo: ToDoOrBe;
+  createTaskList: TaskListOrBe;
+  createToDo: ToDoOrBe;
   deleteTaskList: Scalars['Boolean']['output'];
   deleteToDo: Scalars['Boolean']['output'];
-  removeUserFromTaskList?: Maybe<TaskList>;
-  signIn: AuthUser;
-  signUp: AuthUser;
-  unAssignUserFromToDo: ToDo;
-  updateTaskList: TaskList;
-  updateToDo: ToDo;
+  removeUserFromTaskList?: Maybe<TaskListOrBe>;
+  signIn: AuthUserOrBe;
+  signUp: AuthUserOrBe;
+  unAssignUserFromToDo: ToDoOrBe;
+  updateTaskList: TaskListOrBe;
+  updateToDo: ToDoOrBe;
   updateUser: User;
   uploadFile: Scalars['String']['output'];
 };
@@ -137,10 +155,10 @@ export type MutationUploadFileArgs = {
 export type Query = {
   __typename?: 'Query';
   getAllUsers: Array<User>;
-  getMe: User;
-  getTaskList: TaskList;
-  getToDo: ToDo;
-  myTaskLists: Array<SimpleTask>;
+  getMe: UserOrBe;
+  getTaskList: TaskListOrBe;
+  getToDo: ToDoOrBe;
+  myTaskLists: ListOrBe;
 };
 
 
@@ -182,6 +200,13 @@ export type TaskList = {
   users: Array<User>;
 };
 
+export type TaskListArray = {
+  __typename?: 'TaskListArray';
+  taskLists: Array<TaskList>;
+};
+
+export type TaskListOrBe = BaseError | TaskList;
+
 export type ToDo = {
   __typename?: 'ToDo';
   assignees: Array<User>;
@@ -193,6 +218,8 @@ export type ToDo = {
   taskListId: Scalars['ID']['output'];
 };
 
+export type ToDoOrBe = BaseError | ToDo;
+
 export type User = {
   __typename?: 'User';
   avatar?: Maybe<Scalars['String']['output']>;
@@ -200,6 +227,8 @@ export type User = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
+
+export type UserOrBe = BaseError | User;
 
 export type UploadFileMutationVariables = Exact<{
   file: Scalars['Upload']['input'];
@@ -214,14 +243,14 @@ export type AddUserToTaskMutationVariables = Exact<{
 }>;
 
 
-export type AddUserToTaskMutation = { __typename?: 'Mutation', addUserToTaskList?: { __typename?: 'TaskList', users: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> } | null };
+export type AddUserToTaskMutation = { __typename?: 'Mutation', addUserToTaskList?: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'TaskList', users: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> } | null };
 
 export type CreateTaskMutationVariables = Exact<{
   title: Scalars['String']['input'];
 }>;
 
 
-export type CreateTaskMutation = { __typename?: 'Mutation', createTaskList: { __typename?: 'TaskList', createdAt: string, id: string, title: string } };
+export type CreateTaskMutation = { __typename?: 'Mutation', createTaskList: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'TaskList', createdAt: string, id: string, title: string } };
 
 export type DeleteTaskMutationVariables = Exact<{
   deleteTaskListId: Scalars['ID']['input'];
@@ -233,14 +262,14 @@ export type DeleteTaskMutation = { __typename?: 'Mutation', deleteTaskList: bool
 export type GetMyTaskListsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMyTaskListsQuery = { __typename?: 'Query', myTaskLists: Array<{ __typename?: 'SimpleTask', createdAt: string, id: string, title: string }> };
+export type GetMyTaskListsQuery = { __typename?: 'Query', myTaskLists: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'TaskListArray', taskLists: Array<{ __typename?: 'TaskList', createdAt: string, title: string, id: string }> } };
 
 export type GetTaskQueryVariables = Exact<{
   taskId: Scalars['ID']['input'];
 }>;
 
 
-export type GetTaskQuery = { __typename?: 'Query', getTaskList: { __typename?: 'TaskList', createdAt: string, id: string, progress: number, title: string, users: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, todos: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskListId: string, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, subtasks: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> }> }> } };
+export type GetTaskQuery = { __typename?: 'Query', getTaskList: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'TaskList', createdAt: string, id: string, progress: number, title: string, users: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, todos: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskListId: string, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, subtasks: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> }> }> } };
 
 export type RemoveUserFromTaskListMutationVariables = Exact<{
   taskListId: Scalars['ID']['input'];
@@ -248,7 +277,7 @@ export type RemoveUserFromTaskListMutationVariables = Exact<{
 }>;
 
 
-export type RemoveUserFromTaskListMutation = { __typename?: 'Mutation', removeUserFromTaskList?: { __typename?: 'TaskList', users: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> } | null };
+export type RemoveUserFromTaskListMutation = { __typename?: 'Mutation', removeUserFromTaskList?: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'TaskList', users: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> } | null };
 
 export type UpdateTaskMutationVariables = Exact<{
   taskId: Scalars['ID']['input'];
@@ -256,7 +285,7 @@ export type UpdateTaskMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTaskMutation = { __typename?: 'Mutation', updateTaskList: { __typename?: 'TaskList', id: string } };
+export type UpdateTaskMutation = { __typename?: 'Mutation', updateTaskList: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'TaskList', id: string } };
 
 export type AssignUserToToDoMutationVariables = Exact<{
   todoId: Scalars['ID']['input'];
@@ -264,7 +293,7 @@ export type AssignUserToToDoMutationVariables = Exact<{
 }>;
 
 
-export type AssignUserToToDoMutation = { __typename?: 'Mutation', assignUserToToDo: { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskListId: string, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, subtasks: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> }> } };
+export type AssignUserToToDoMutation = { __typename?: 'Mutation', assignUserToToDo: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskListId: string, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, subtasks: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> }> } };
 
 export type CreateTodoMutationVariables = Exact<{
   content: Scalars['String']['input'];
@@ -273,7 +302,7 @@ export type CreateTodoMutationVariables = Exact<{
 }>;
 
 
-export type CreateTodoMutation = { __typename?: 'Mutation', createToDo: { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskList: { __typename?: 'TaskList', id: string, progress: number } } };
+export type CreateTodoMutation = { __typename?: 'Mutation', createToDo: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskList: { __typename?: 'TaskList', id: string, progress: number } } };
 
 export type DeleteToDoMutationVariables = Exact<{
   todoId: Scalars['ID']['input'];
@@ -287,7 +316,7 @@ export type GetToDoQueryVariables = Exact<{
 }>;
 
 
-export type GetToDoQuery = { __typename?: 'Query', getToDo: { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskListId: string, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, subtasks: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> }> } };
+export type GetToDoQuery = { __typename?: 'Query', getToDo: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskListId: string, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, subtasks: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> }> } };
 
 export type UnAssignUserFromToDoMutationVariables = Exact<{
   todoId: Scalars['ID']['input'];
@@ -295,7 +324,7 @@ export type UnAssignUserFromToDoMutationVariables = Exact<{
 }>;
 
 
-export type UnAssignUserFromToDoMutation = { __typename?: 'Mutation', unAssignUserFromToDo: { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskListId: string, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, subtasks: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> }> } };
+export type UnAssignUserFromToDoMutation = { __typename?: 'Mutation', unAssignUserFromToDo: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, taskListId: string, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }>, subtasks: Array<{ __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> }> } };
 
 export type UpdateToDoMutationVariables = Exact<{
   todoId: Scalars['ID']['input'];
@@ -304,7 +333,7 @@ export type UpdateToDoMutationVariables = Exact<{
 }>;
 
 
-export type UpdateToDoMutation = { __typename?: 'Mutation', updateToDo: { __typename?: 'ToDo', content: string, id: string, isCompleted: boolean } };
+export type UpdateToDoMutation = { __typename?: 'Mutation', updateToDo: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'ToDo', content: string, id: string, isCompleted: boolean } };
 
 export type SimpleSubtaskFragment = { __typename?: 'ToDo', id: string, content: string, isCompleted: boolean, assignees: Array<{ __typename?: 'User', avatar?: string | null, email: string, id: string, name: string }> };
 
@@ -318,21 +347,21 @@ export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: Array<{ __ty
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeQuery = { __typename?: 'Query', getMe: { __typename?: 'User', avatar?: string | null, email: string, id: string, name: string } };
+export type GetMeQuery = { __typename?: 'Query', getMe: { __typename?: 'BaseError', status: ErrorStatus } | { __typename?: 'User', avatar?: string | null, email: string, id: string, name: string } };
 
 export type SignInMutationVariables = Exact<{
-  signInInput?: InputMaybe<SignInInput>;
+  input?: InputMaybe<SignInInput>;
 }>;
 
 
-export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'AuthUser', token: string, user: { __typename?: 'User', avatar?: string | null, email: string, id: string, name: string } } };
+export type SignInMutation = { __typename?: 'Mutation', signIn: { __typename?: 'AuthUser', token: string, user: { __typename?: 'User', avatar?: string | null, email: string, id: string, name: string } } | { __typename?: 'BaseError', status: ErrorStatus } };
 
 export type SignUpMutationVariables = Exact<{
   input?: InputMaybe<SignUpInput>;
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthUser', token: string, user: { __typename?: 'User', avatar?: string | null, email: string, id: string, name: string } } };
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'AuthUser', token: string, user: { __typename?: 'User', avatar?: string | null, email: string, id: string, name: string } } | { __typename?: 'BaseError', status: ErrorStatus } };
 
 export type UpdateUserMutationVariables = Exact<{
   name?: InputMaybe<Scalars['String']['input']>;
@@ -411,8 +440,13 @@ export type UploadFileMutationOptions = Apollo.BaseMutationOptions<UploadFileMut
 export const AddUserToTaskDocument = gql`
     mutation AddUserToTask($taskListId: ID!, $userId: ID!) {
   addUserToTaskList(taskListId: $taskListId, userId: $userId) {
-    users {
-      ...FullUser
+    ... on TaskList {
+      users {
+        ...FullUser
+      }
+    }
+    ... on BaseError {
+      status
     }
   }
 }
@@ -447,9 +481,14 @@ export type AddUserToTaskMutationOptions = Apollo.BaseMutationOptions<AddUserToT
 export const CreateTaskDocument = gql`
     mutation CreateTask($title: String!) {
   createTaskList(title: $title) {
-    createdAt
-    id
-    title
+    ... on TaskList {
+      createdAt
+      id
+      title
+    }
+    ... on BaseError {
+      status
+    }
   }
 }
     `;
@@ -513,9 +552,16 @@ export type DeleteTaskMutationOptions = Apollo.BaseMutationOptions<DeleteTaskMut
 export const GetMyTaskListsDocument = gql`
     query GetMyTaskLists {
   myTaskLists {
-    createdAt
-    id
-    title
+    ... on TaskListArray {
+      taskLists {
+        createdAt
+        title
+        id
+      }
+    }
+    ... on BaseError {
+      status
+    }
   }
 }
     `;
@@ -554,15 +600,20 @@ export type GetMyTaskListsQueryResult = Apollo.QueryResult<GetMyTaskListsQuery, 
 export const GetTaskDocument = gql`
     query GetTask($taskId: ID!) {
   getTaskList(id: $taskId) {
-    createdAt
-    id
-    progress
-    title
-    users {
-      ...FullUser
+    ... on TaskList {
+      createdAt
+      id
+      progress
+      title
+      users {
+        ...FullUser
+      }
+      todos {
+        ...SimpleTodo
+      }
     }
-    todos {
-      ...SimpleTodo
+    ... on BaseError {
+      status
     }
   }
 }
@@ -604,8 +655,13 @@ export type GetTaskQueryResult = Apollo.QueryResult<GetTaskQuery, GetTaskQueryVa
 export const RemoveUserFromTaskListDocument = gql`
     mutation RemoveUserFromTaskList($taskListId: ID!, $userId: ID!) {
   removeUserFromTaskList(taskListId: $taskListId, userId: $userId) {
-    users {
-      ...FullUser
+    ... on TaskList {
+      users {
+        ...FullUser
+      }
+    }
+    ... on BaseError {
+      status
     }
   }
 }
@@ -640,7 +696,12 @@ export type RemoveUserFromTaskListMutationOptions = Apollo.BaseMutationOptions<R
 export const UpdateTaskDocument = gql`
     mutation UpdateTask($taskId: ID!, $title: String!) {
   updateTaskList(id: $taskId, title: $title) {
-    id
+    ... on TaskList {
+      id
+    }
+    ... on BaseError {
+      status
+    }
   }
 }
     `;
@@ -674,7 +735,12 @@ export type UpdateTaskMutationOptions = Apollo.BaseMutationOptions<UpdateTaskMut
 export const AssignUserToToDoDocument = gql`
     mutation AssignUserToToDo($todoId: ID!, $userId: ID!) {
   assignUserToToDo(todoId: $todoId, userId: $userId) {
-    ...SimpleTodo
+    ... on ToDo {
+      ...SimpleTodo
+    }
+    ... on BaseError {
+      status
+    }
   }
 }
     ${SimpleTodoFragmentDoc}`;
@@ -708,12 +774,17 @@ export type AssignUserToToDoMutationOptions = Apollo.BaseMutationOptions<AssignU
 export const CreateTodoDocument = gql`
     mutation CreateTodo($content: String!, $taskListId: ID!, $todoId: ID) {
   createToDo(content: $content, taskListId: $taskListId, todoId: $todoId) {
-    id
-    content
-    isCompleted
-    taskList {
+    ... on ToDo {
       id
-      progress
+      content
+      isCompleted
+      taskList {
+        id
+        progress
+      }
+    }
+    ... on BaseError {
+      status
     }
   }
 }
@@ -780,7 +851,12 @@ export type DeleteToDoMutationOptions = Apollo.BaseMutationOptions<DeleteToDoMut
 export const GetToDoDocument = gql`
     query GetToDo($todoId: ID!) {
   getToDo(id: $todoId) {
-    ...SimpleTodo
+    ... on ToDo {
+      ...SimpleTodo
+    }
+    ... on BaseError {
+      status
+    }
   }
 }
     ${SimpleTodoFragmentDoc}`;
@@ -820,7 +896,12 @@ export type GetToDoQueryResult = Apollo.QueryResult<GetToDoQuery, GetToDoQueryVa
 export const UnAssignUserFromToDoDocument = gql`
     mutation unAssignUserFromToDo($todoId: ID!, $userId: ID!) {
   unAssignUserFromToDo(todoId: $todoId, userId: $userId) {
-    ...SimpleTodo
+    ... on ToDo {
+      ...SimpleTodo
+    }
+    ... on BaseError {
+      status
+    }
   }
 }
     ${SimpleTodoFragmentDoc}`;
@@ -854,9 +935,14 @@ export type UnAssignUserFromToDoMutationOptions = Apollo.BaseMutationOptions<UnA
 export const UpdateToDoDocument = gql`
     mutation UpdateToDo($todoId: ID!, $content: String, $isCompleted: Boolean) {
   updateToDo(id: $todoId, content: $content, isCompleted: $isCompleted) {
-    content
-    id
-    isCompleted
+    ... on ToDo {
+      content
+      id
+      isCompleted
+    }
+    ... on BaseError {
+      status
+    }
   }
 }
     `;
@@ -930,7 +1016,12 @@ export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAll
 export const GetMeDocument = gql`
     query GetMe {
   getMe {
-    ...FullUser
+    ... on User {
+      ...FullUser
+    }
+    ... on BaseError {
+      status
+    }
   }
 }
     ${FullUserFragmentDoc}`;
@@ -967,11 +1058,16 @@ export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>;
 export type GetMeSuspenseQueryHookResult = ReturnType<typeof useGetMeSuspenseQuery>;
 export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>;
 export const SignInDocument = gql`
-    mutation SignIn($signInInput: SignInInput) {
-  signIn(input: $signInInput) {
-    token
-    user {
-      ...FullUser
+    mutation SignIn($input: SignInInput) {
+  signIn(input: $input) {
+    ... on AuthUser {
+      user {
+        ...FullUser
+      }
+      token
+    }
+    ... on BaseError {
+      status
     }
   }
 }
@@ -991,7 +1087,7 @@ export type SignInMutationFn = Apollo.MutationFunction<SignInMutation, SignInMut
  * @example
  * const [signInMutation, { data, loading, error }] = useSignInMutation({
  *   variables: {
- *      signInInput: // value for 'signInInput'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -1005,9 +1101,14 @@ export type SignInMutationOptions = Apollo.BaseMutationOptions<SignInMutation, S
 export const SignUpDocument = gql`
     mutation SignUp($input: SignUpInput) {
   signUp(input: $input) {
-    token
-    user {
-      ...FullUser
+    ... on AuthUser {
+      user {
+        ...FullUser
+      }
+      token
+    }
+    ... on BaseError {
+      status
     }
   }
 }

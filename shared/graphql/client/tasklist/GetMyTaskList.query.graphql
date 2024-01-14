@@ -1,7 +1,14 @@
 query GetMyTaskLists {
   myTaskLists {
-    createdAt
-    id
-    title
+    ... on TaskListArray {
+      taskLists {
+        createdAt
+        title
+        id
+      }
+    }
+    ... on BaseError {
+      status
+    }
   }
 }

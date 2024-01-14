@@ -29,16 +29,20 @@ const SignInScreen = () => {
   }, [error]);
 
   const onSubmit = async () => {
-    const signInInput = {
+    const input = {
       email: email,
       password: password,
     };
-    const response = await signIn({variables: {signInInput}});
+    const response = await signIn({variables: { input }});
 
     if (response.data) {
+      if(response.data.signIn.__typename === 'AuthUser')
       AsyncStorage.setItem('token', response.data.signIn.token).then(() =>
         navigation.navigate('Root'),
       );
+
+      if(response.data.signIn.__typename === 'BaseError')
+      Alert.alert(response.data.signIn.status)
     }
   };
   return (

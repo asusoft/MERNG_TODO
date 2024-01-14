@@ -1,6 +1,6 @@
 export const UserQuery = `
     type Query {
-        getMe: User!
+        getMe: UserOrBE!
         getAllUsers: [User!]!
     }
 `;

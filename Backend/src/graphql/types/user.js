@@ -1,4 +1,7 @@
 export const UserType = `
+  union UserOrBE = User | BaseError
+  union AuthUserOrBE = AuthUser | BaseError
+
   type User {
     id: ID!
     name: String!

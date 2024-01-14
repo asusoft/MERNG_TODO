@@ -1,7 +1,8 @@
 import { ObjectId } from "mongodb";
+import { ErrorStatus } from "../../../../helpers/Constants.js";
 
 export const assignUserToToDoResolver = async (_, { todoId, userId }, { db, user }) => {
-    if (!user) { throw new Error('Unauthenticated') }
+    if (!user)  return { status: ErrorStatus.NOT_AUTHENTICATED };
 
     const todo = await db.collection('ToDos').findOne({ _id: new ObjectId(todoId) });
     

@@ -1,7 +1,12 @@
 mutation RemoveUserFromTaskList($taskListId: ID!, $userId: ID!) {
   removeUserFromTaskList(taskListId: $taskListId, userId: $userId) {
-     users {
-      ...FullUser
+    ... on TaskList {
+      users {
+        ...FullUser
+      }
+    }
+    ... on BaseError {
+      status
     }
   }
 }

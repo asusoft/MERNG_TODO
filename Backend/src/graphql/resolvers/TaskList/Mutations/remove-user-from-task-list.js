@@ -1,7 +1,8 @@
 import { ObjectId } from "mongodb";
+import { ErrorStatus } from "../../../../helpers/Constants.js";
 
 export const removeUserFromTaskListResolver = async (_, { taskListId, userId }, { db, user }) => {
-    if (!user) { throw new Error('Unauthenticated') }
+    if (!user) return { status: ErrorStatus.NOT_AUTHENTICATED }
 
     const taskList = await db.collection('TaskList').findOne({ _id: new ObjectId(taskListId) });
 

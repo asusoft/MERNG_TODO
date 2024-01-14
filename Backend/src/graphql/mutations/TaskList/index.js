@@ -1,9 +1,9 @@
 export const TaskListMutations = `
     type Mutation {
-        createTaskList(title: String!): TaskList!
-        updateTaskList(id: ID!, title: String!): TaskList!
+        createTaskList(title: String!): TaskListOrBE!
+        updateTaskList(id: ID!, title: String!): TaskListOrBE!
         deleteTaskList(id: ID!): Boolean!
-        addUserToTaskList(taskListId: ID!, userId: ID!): TaskList
-        removeUserFromTaskList(taskListId: ID!, userId: ID!): TaskList
+        addUserToTaskList(taskListId: ID!, userId: ID!): TaskListOrBE
+        removeUserFromTaskList(taskListId: ID!, userId: ID!): TaskListOrBE
     }
 `;

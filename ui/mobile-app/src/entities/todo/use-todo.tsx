@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   useCreateTodoMutation,
@@ -16,8 +16,8 @@ export const useToDo = (id: string) => {
   const [assignedUsers, setAssignedUsers] = useState<User[] | undefined>([]);
   const [taskListId, setTasklistId] = useState('');
 
-  const {data, loading, error, refetch} = useGetToDoQuery({
-    variables: {todoId: id},
+  const { data, loading, error, refetch } = useGetToDoQuery({
+    variables: { todoId: id },
   });
 
   const [createToDo] = useCreateTodoMutation();
@@ -28,7 +28,7 @@ export const useToDo = (id: string) => {
 
   const actions = {
     getList: async () => {
-      if (data) {
+      if (data && data.getToDo.__typename === 'ToDo') {
         const list = data.getToDo.subtasks;
         setSubtasks(list);
         setTasklistId(data.getToDo.taskListId)
@@ -37,21 +37,24 @@ export const useToDo = (id: string) => {
     },
     createSubTask: async (index: number) => {
       const response = await createToDo({
-        variables: {content: '', taskListId, todoId: id},
-      });
-      const newSubtasks = [...subtasks];
-
-      newSubtasks.splice(index, 0, {
-        id: response.data?.createToDo?.id || '',
-        content: '',
-        isCompleted: false,
-        assignees: [],
+        variables: { content: '', taskListId, todoId: id },
       });
 
-      setSubtasks(newSubtasks);
+      if (response.data?.createToDo.__typename === 'ToDo') {
+        const newSubtasks = [...subtasks];
+
+        newSubtasks.splice(index, 0, {
+          id: response.data?.createToDo?.id || '',
+          content: '',
+          isCompleted: false,
+          assignees: [],
+        });
+
+        setSubtasks(newSubtasks);
+      }
     },
     deleteSubtask: async (todoId: string) => {
-      const response = await deleteToDo({variables: {todoId}});
+      const response = await deleteToDo({ variables: { todoId } });
       if (response.data?.deleteToDo) {
         setSubtasks(state => {
           if (state && Array.isArray(state)) {
@@ -71,7 +74,7 @@ export const useToDo = (id: string) => {
       });
       refetch();
     },
-    assignUserToToDo: async ( userId: string) => {
+    assignUserToToDo: async (userId: string) => {
       const response = await assignUser({
         variables: {
           todoId: id,
@@ -83,7 +86,7 @@ export const useToDo = (id: string) => {
       }
     },
     unAssignUserFromToDo: async (userId: string) => {
-      
+
       const response = await unAssignUser({
         variables: {
           todoId: id,

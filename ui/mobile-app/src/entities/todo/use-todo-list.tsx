@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   useGetTaskQuery,
   SimpleTodoFragment,
@@ -13,7 +13,7 @@ import {
   useUnAssignUserFromToDoMutation,
   useRemoveUserFromTaskListMutation,
 } from '../../shared/generated/types/graphql';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
 export const useToDoList = (id: string) => {
   const isFocused = useIsFocused();
@@ -22,10 +22,10 @@ export const useToDoList = (id: string) => {
   const [addedUsers, setAddedUsers] = useState<User[] | undefined>([]);
   const [title, setTitle] = useState('');
   const [progress, setProgess] = useState(0);
-  const {data, loading, error, refetch} = useGetTaskQuery({
-    variables: {taskId: id},
+  const { data, loading, error, refetch } = useGetTaskQuery({
+    variables: { taskId: id },
   });
-  const {data: unaddedUsers, refetch: refechUnaddedUsers} =
+  const { data: unaddedUsers, refetch: refechUnaddedUsers } =
     useGetAllUsersQuery();
 
   const [createToDo] = useCreateTodoMutation();
@@ -38,12 +38,14 @@ export const useToDoList = (id: string) => {
   const actions = {
     getList: async () => {
       if (data) {
-        const list = data.getTaskList.todos;
-        setList(list);
-        setTitle(data.getTaskList.title);
-        setAddedUsers(data.getTaskList.users);
-        const prog = data.getTaskList.progress / 100;
-        setProgess(prog);
+        if (data.getTaskList.__typename === 'TaskList') {
+          const list = data.getTaskList.todos;
+          setList(list);
+          setTitle(data.getTaskList.title);
+          setAddedUsers(data.getTaskList.users);
+          const prog = data.getTaskList.progress / 100;
+          setProgess(prog);
+        }
       }
     },
     getUnAddedUsers: async () => {
@@ -57,10 +59,11 @@ export const useToDoList = (id: string) => {
     },
     createNew: async (index: number) => {
       const response = await createToDo({
-        variables: {content: '', taskListId: id},
+        variables: { content: '', taskListId: id },
       });
       const newTodos = [...list];
 
+      if(response.data?.createToDo.__typename === 'ToDo')
       newTodos.splice(index, 0, {
         id: response.data?.createToDo?.id || '',
         content: '',
@@ -73,10 +76,10 @@ export const useToDoList = (id: string) => {
       setList(newTodos);
     },
     updateTask: async (title: string) => {
-      await updateTask({variables: {taskId: id, title}});
+      await updateTask({ variables: { taskId: id, title } });
     },
     deleteTodo: async (todoId: string) => {
-      const response = await deleteToDo({variables: {todoId}});
+      const response = await deleteToDo({ variables: { todoId } });
       if (response.data?.deleteToDo) {
         setList(state => {
           if (state && Array.isArray(state)) {
@@ -105,8 +108,8 @@ export const useToDoList = (id: string) => {
       });
 
       if (response.data) {
-        setAddedUsers(response.data.addUserToTaskList?.users);
-        if (response.data) {
+        if (response.data.addUserToTaskList?.__typename === 'TaskList') {
+          setAddedUsers(response.data.addUserToTaskList?.users);
           setUsers(state => {
             if (state && Array.isArray(state)) {
               return state.filter(item => item.id !== userId);
@@ -114,6 +117,7 @@ export const useToDoList = (id: string) => {
             return state;
           });
         }
+
       }
     },
     removeUserFromTask: async (userId: string) => {

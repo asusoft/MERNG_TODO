@@ -1,7 +1,7 @@
 export const UserMutations = `
     type Mutation {
-        signUp(input: SignUpInput): AuthUser!
-        signIn(input: SignInInput): AuthUser!
+        signUp(input: SignUpInput): AuthUserOrBE!
+        signIn(input: SignInInput): AuthUserOrBE!
         updateUser(name: String, avatar: String): User!
     }
 `;

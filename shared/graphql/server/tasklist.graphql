@@ -1,3 +1,5 @@
+union TaskListOrBE = TaskList | BaseError
+
 type TaskList {
     id: ID!
     createdAt: String!
@@ -13,15 +15,21 @@ type SimpleTask {
     title: String!
 }
 
+type TaskListArray {
+  taskLists: [TaskList!]!
+}
+
+union ListOrBE = TaskListArray | BaseError
+
 extend type Query {
-    myTaskLists: [SimpleTask!]!
-    getTaskList(id: ID!): TaskList!
+    myTaskLists: ListOrBE!
+    getTaskList(id: ID!): TaskListOrBE!
 }
 
 extend type Mutation {
-    createTaskList(title: String!): TaskList!
-    updateTaskList(id: ID!, title: String!): TaskList!
+    createTaskList(title: String!): TaskListOrBE!
+    updateTaskList(id: ID!, title: String!): TaskListOrBE!
     deleteTaskList(id: ID!): Boolean!
-    addUserToTaskList(taskListId: ID!, userId: ID!): TaskList
-    removeUserFromTaskList(taskListId: ID!, userId: ID!): TaskList
+    addUserToTaskList(taskListId: ID!, userId: ID!): TaskListOrBE
+    removeUserFromTaskList(taskListId: ID!, userId: ID!): TaskListOrBE
 }

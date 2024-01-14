@@ -32,5 +32,27 @@ export const TaskListCustomResolvers = {
                 { todoId: "" }
             ]
         }).toArray(),
-}
+    },
+    TaskListOrBE: {
+        __resolveType(obj, _, __){
+            if(obj._id || obj.id){
+                return 'TaskList';
+            }
+            if(obj.status){
+                return 'BaseError';
+            }
+            return null;
+        },
+    },
+    ListOrBE: {
+        __resolveType(obj, _, __){
+            if(obj.taskLists){
+                return 'TaskListArray';
+            }
+            if(obj.status){
+                return 'BaseError';
+            }
+            return null;
+        }
+    },
 };

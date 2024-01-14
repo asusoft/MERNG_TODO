@@ -1,7 +1,12 @@
 mutation CreateTask($title: String!) {
   createTaskList(title: $title) {
-    createdAt
-    id
-    title
+    ... on TaskList {
+      createdAt
+      id
+      title
+    }
+    ... on BaseError {
+      status
+    }
   }
 }

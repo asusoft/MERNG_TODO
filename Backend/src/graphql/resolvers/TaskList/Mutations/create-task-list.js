@@ -1,6 +1,7 @@
+import { ErrorStatus } from "../../../../helpers/Constants.js";
 
 export const createTaskListResolver = async (_, { title }, { db, user }) => {
-    if(!user) { throw new Error('Unauthenticated') }
+    if(!user)  return { status: ErrorStatus.NOT_AUTHENTICATED }
 
     const newTaskList = {
         title,

@@ -1,7 +1,12 @@
 mutation AddUserToTask($taskListId: ID!, $userId: ID!) {
   addUserToTaskList(taskListId: $taskListId, userId: $userId) {
-    users {
-      ...FullUser
+    ... on TaskList {
+       users {
+        ...FullUser
+      }
+    }
+    ... on BaseError {
+      status
     }
   }
 }
