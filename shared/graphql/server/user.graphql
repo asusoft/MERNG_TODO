@@ -25,6 +25,7 @@ input SignInInput {
 extend type Mutation {
     signUp(input: SignUpInput): AuthUser!
     signIn(input: SignInInput): AuthUser!
+    updateUser(name: String, avatar: String): User!
 }
 
 extend type Query {

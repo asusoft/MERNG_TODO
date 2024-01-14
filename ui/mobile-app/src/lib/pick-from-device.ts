@@ -39,8 +39,8 @@ export const pickFromDevice = async (
         mediaType,
         compressImageQuality: 0.8,
         compressVideoPreset: '1280x720',
-        cropperCancelText: 'Отменить',
-        cropperChooseText: 'Выбрать',
+        cropperCancelText: 'Cancel',
+        cropperChooseText: 'Choose',
         maximumVideoDuration: options?.maximumVideoDuration,
       })
 

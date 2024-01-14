@@ -10,7 +10,7 @@ import { useUploadFileMutation } from '../../shared/generated/types/graphql';
 
 const UserEditScreen = () => {
     const navigation = useNavigation<NavigationProp<ParamListBase>>();
-    const { user, actions } = useUser()
+    const { user, actions, loading } = useUser()
     const [editName, setEditName] = useState(false)
     const [newName, setName] = useState(user?.name);
     const [uploadImage] = useUploadFileMutation()
@@ -24,7 +24,7 @@ const UserEditScreen = () => {
 
     const callEditName = async () => {
         if (editName) {
-            // await actions.updateTask(newName);
+            await actions.updateMe(newName, avatar);
             setEditName(false);
             if (inputRef.current) {
                 inputRef.current?.blur();
@@ -46,10 +46,9 @@ const UserEditScreen = () => {
         const response = await uploadImage({ variables: { file: RNFile } })
 
         if(response.data) {
-            setAvatar(response.data.uploadFile)
+            if(newName)
+            await actions.updateMe(newName, response.data.uploadFile)
         }
-
-        console.log(response)
     }
 
     return (
@@ -62,7 +61,7 @@ const UserEditScreen = () => {
                     />
                 </Pressable>
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Avatar user={user} dimension={120} index={2} url={avatar} />
+                    <Avatar user={user} dimension={120} index={2} loading={loading}/>
                     <View style={{ marginTop: 10, flexDirection: 'row' }}>
                         <TextInput
                             ref={inputRef}

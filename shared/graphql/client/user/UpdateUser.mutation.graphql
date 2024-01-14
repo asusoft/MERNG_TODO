@@ -1,0 +1,5 @@
+mutation UpdateUser($name: String, $avatar: String) {
+  updateUser(name: $name, avatar: $avatar) {
+    ...FullUser
+  }
+}

@@ -20,12 +20,9 @@ export const TaskListScreen = () => {
   const [isAddTask, setIsAddTask] = useState(false);
   const [title, setTitle] = useState('');
   const {list, createNewTask, loading, deleteTask} = useTaskList();
-  const { user, actions: userActions} = useUser()
+  const { user } = useUser()
   
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  const onItemPress = () => {
-    
-  };
 
   const onCreate = async () => {
     if (title !== '') {

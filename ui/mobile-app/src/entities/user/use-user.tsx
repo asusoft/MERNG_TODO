@@ -3,11 +3,13 @@ import {useEffect, useState} from 'react';
 import {
   User,
   useGetMeQuery,
+  useUpdateUserMutation,
 } from '../../shared/generated/types/graphql';
 
 export const useUser = () => {
   const [user, setUser] = useState<User | undefined>();
-  const { data, loading, error} = useGetMeQuery()
+  const { data } = useGetMeQuery()
+  const  [updateUser, { loading }] = useUpdateUserMutation()
 
   const actions = {
     getMe: async () => {
@@ -15,6 +17,14 @@ export const useUser = () => {
             const user = data.getMe
             setUser(user)
         }
+    },
+    updateMe: async (name?: string, avatar?: string | null) => {
+      const response = await updateUser({variables: {name, avatar}})
+
+      if(response.data){
+        const updatedUser = response.data.updateUser
+        setUser(updatedUser)
+      }
     }
     
   };
@@ -26,5 +36,6 @@ export const useUser = () => {
   return {
     user,
     actions,
+    loading
   };
 };
