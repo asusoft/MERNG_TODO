@@ -118,7 +118,7 @@ const ToDoItem = ({
                 marginRight: 5,
                 height: 18,
                 width: 18,
-                tintColor: 'white',
+                tintColor: todo.isCompleted ? 'grey' : 'white',
                 transform: [{ rotate: showSubtasks ? '270deg' : '180deg' }],
               }}
             />
