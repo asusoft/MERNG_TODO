@@ -1,5 +1,6 @@
 query GetMe {
   getMe {
+     __typename
     ... on User {
       ...FullUser
     }

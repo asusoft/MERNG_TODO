@@ -1,5 +1,6 @@
 mutation SignIn($input: SignInInput) {
   signIn(input: $input) {
+     __typename
     ... on AuthUser {
       user {
         ...FullUser
